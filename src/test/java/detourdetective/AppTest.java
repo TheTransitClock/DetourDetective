@@ -1,4 +1,4 @@
-package transitclock;
+package detourdetective;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

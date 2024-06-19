@@ -1,0 +1,17 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://detourdetective-data.c54kqq8gwcnd.eu-north-1.rds.amazonaws.com:5432/initial_DB</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">xxx</property>
+        <property name="hibernate.hbm2ddl.auto">none</property>
+        <property name="hibernate.show_sql">true</property>
+        <mapping class="detourdetective.VehiclePosition"/>
+
+    </session-factory>
+</hibernate-configuration>

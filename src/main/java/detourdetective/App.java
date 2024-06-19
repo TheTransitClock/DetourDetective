@@ -1,4 +1,4 @@
-package transitclock;
+package detourdetective;
 
 /**
  * Hello world!
