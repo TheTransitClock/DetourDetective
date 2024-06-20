@@ -1,4 +1,4 @@
-package detourdetective;
+package detourdetective.entities;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;

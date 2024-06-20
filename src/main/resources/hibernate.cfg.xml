@@ -11,9 +11,9 @@
         <property name="hibernate.connection.password">xxxx</property>
         <property name="hibernate.hbm2ddl.auto">none</property>
         <property name="hibernate.show_sql">true</property>
-        <mapping class="detourdetective.VehiclePosition"/>
-        <mapping class="detourdetective.EntityTrip"/>
-        <mapping class="detourdetective.EntityShapes"/>
+        <mapping class="detourdetective.entities.VehiclePosition"/>
+        <mapping class="detourdetective.entities.Trip"/>
+        <mapping class="detourdetective.entities.Shape"/>
 
     </session-factory>
 </hibernate-configuration>

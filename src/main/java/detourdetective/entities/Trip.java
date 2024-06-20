@@ -1,23 +1,28 @@
-package detourdetective;
+package detourdetective.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
+import java.util.List;
 
 @Entity(name = "trips")
-public class EntityTrip {
+public class Trip implements Serializable {
     @Id
     private String trip_id;
     private String route_id;
     private String service_id;
     private Integer direction_id;
     private String block_id;
-    private String shape_id;
     private String trip_type;
     private String trip_headsign;
     private String trip_short_name;
     private Integer bikes_allowed;
     private Integer wheelchair_accessible;
+    @OneToMany(fetch = FetchType.EAGER, targetEntity=Shape.class)
+    @JoinColumn(name = "shape_id", referencedColumnName = "shape_id")
+    private List<Shape> shapes;
+
+    private static final long serialVersionUID = 1234L;
 
     public String getTrip_id() {
         return trip_id;
@@ -57,14 +62,6 @@ public class EntityTrip {
 
     public void setBlock_id(String block_id) {
         this.block_id = block_id;
-    }
-
-    public String getShape_id() {
-        return shape_id;
-    }
-
-    public void setShape_id(String shape_id) {
-        this.shape_id = shape_id;
     }
 
     public String getTrip_type() {
@@ -115,13 +112,20 @@ public class EntityTrip {
                 ", service_id='" + service_id + '\'' +
                 ", direction_id=" + direction_id +
                 ", block_id='" + block_id + '\'' +
-                ", shape_id='" + shape_id + '\'' +
                 ", trip_type='" + trip_type + '\'' +
                 ", trip_headsign='" + trip_headsign + '\'' +
                 ", trip_short_name='" + trip_short_name + '\'' +
                 ", bikes_allowed=" + bikes_allowed +
                 ", wheelchair_accessible=" + wheelchair_accessible +
                 '}';
+    }
+
+    public List<Shape> getShapes() {
+        return shapes;
+    }
+
+    public void setShapes(List<Shape> shapes) {
+        this.shapes = shapes;
     }
 }
 

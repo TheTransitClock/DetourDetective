@@ -1,9 +1,10 @@
-package detourdetective;
+package detourdetective.managers;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import detourdetective.HibernateUtil;
+import detourdetective.entities.Shape;
+import detourdetective.entities.Trip;
+import detourdetective.entities.VehiclePosition;
+import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -11,8 +12,8 @@ import org.hibernate.query.Query;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ReadTrip {
-    public static List<VehiclePosition> readtrip() {
+public class VehiclePositionManager {
+    public static List<VehiclePosition> readtripVehiclePosition(String tripId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
@@ -21,7 +22,7 @@ public class ReadTrip {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
             Root<VehiclePosition> root = cr.from(VehiclePosition.class);
-            cr.select(root).where(cb.like(root.get("trip_id"), "JG_A4-Weekday-SDon-084600_B16_414"));
+            cr.select(root).where(cb.like(root.get("trip_id"), tripId));
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
@@ -36,7 +37,7 @@ public class ReadTrip {
             return null;
         }
     }
-    public static List<VehiclePosition> getTripVehiclePositions() {
+    public static List<VehiclePosition> getTripVehiclePositionsByDate(String tripId, LocalDate startDate) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
@@ -45,8 +46,8 @@ public class ReadTrip {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
             Root<VehiclePosition> root = cr.from(VehiclePosition.class);
-            Predicate tripIdPredicate = cb.like(root.get("trip_id"), "JG_A4-Weekday-SDon-084600_B16_414");
-            Predicate startDatePredicate = cb.like(root.get("trip_start_date"), "2024-03-26");
+            Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
+            Predicate startDatePredicate = cb.equal(root.get("trip_start_date"), startDate);
 
             Predicate combinedPredicate = cb.and(tripIdPredicate, startDatePredicate);
 
@@ -58,38 +59,14 @@ public class ReadTrip {
             transaction.commit();
             return results;
         } catch (Exception e) {
+            e.printStackTrace();
             if (transaction != null) {
                 transaction.rollback();
             }
-            e.printStackTrace();
             return null;
         }
     }
-    public static List<VehiclePosition> getTripsBetweenStartDateAndEndDate(LocalDate startDate, LocalDate endDate) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // start a transaction
-            transaction = session.beginTransaction();
 
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
-            Root<VehiclePosition> root = cr.from(VehiclePosition.class);
-
-            cr.select(root).where(cb.between(root.get("trip_start_date"),startDate,endDate));
-
-            Query<VehiclePosition> query = session.createQuery(cr);
-            List<VehiclePosition> results = query.getResultList();
-            // commit transaction
-            transaction.commit();
-            return results;
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-            return null;
-        }
-    }
 
 
 

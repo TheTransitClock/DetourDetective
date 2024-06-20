@@ -1,15 +1,19 @@
-package detourdetective;
+package detourdetective.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-@Entity(name = "shape")
-public class EntityShapes {
+
+import java.io.Serializable;
+
+@Entity(name = "shapes")
+public class Shape implements Serializable {
     @Id
     private String shape_id;
     private Double shape_pt_lat;
     private Double shape_pt_lon;
     private Integer shape_pt_sequence;
     private Double shape_dist_traveled;
+    private static final long serialVersionUID = 4321L;
 
     public String getShape_id() {
         return shape_id;
