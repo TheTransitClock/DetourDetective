@@ -1,6 +1,7 @@
 package detourdetective.managers;
 
 import detourdetective.HibernateUtil;
+import detourdetective.entities.Shape;
 import detourdetective.entities.Trip;
 import detourdetective.entities.VehiclePosition;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -13,11 +14,18 @@ import org.hibernate.query.Query;
 import java.util.List;
 
 public class TripManager {
+	
+	public static List<Shape> readTripShaope(String tripId)
+	{
+		Trip trip = TripManager.readtrip(tripId);
+		trip.getShape_id();
+		System.out.println(trip);
+		return null;
+	}
     public static Trip readtrip(String tripId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // start a transaction
-            transaction = session.beginTransaction();
+           
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Trip> cr = cb.createQuery(Trip.class);
@@ -27,16 +35,14 @@ public class TripManager {
             Query<Trip> query = session.createQuery(cr);
             List<Trip> results = query.getResultList();
             // commit transaction
-            transaction.commit();
+          
             if(results.size() > 0) {
                 return results.get(0);
             }else{
                 return null;
             }
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+           
             e.printStackTrace();
             return null;
         }
