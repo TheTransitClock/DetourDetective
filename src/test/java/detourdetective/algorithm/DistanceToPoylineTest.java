@@ -7,14 +7,13 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.junit.jupiter.api.Test;
-class DistanceToPoylineTest extends TestCase{
+public class DistanceToPoylineTest extends TestCase{
 	
 
 	    @Test
 	    public void testDistanceBetweenPointAndPolyline() throws ParseException {
 	    	// create a geometry factory
 	    	GeometryFactory gf = new GeometryFactory();
-
 	    	// create a point
 	    	Coordinate pointCoord = new Coordinate(10.0, 20.0);
 	    	Point point = gf.createPoint(pointCoord);
@@ -31,6 +30,7 @@ class DistanceToPoylineTest extends TestCase{
 	    	double distance = polyline.distance(point);
 
 	    	System.out.println("Distance: " + distance);
+	    	
 	    }
 	}
 
