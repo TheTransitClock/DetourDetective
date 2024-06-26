@@ -10,9 +10,12 @@ import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import org.locationtech.jts.awt.PointShapeFactory.Point;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TripManager {
@@ -24,21 +27,26 @@ public class TripManager {
 		System.out.println(trip);
 		return null;
 	}
-	public static List<List<Double>> readShapeLatAndLong(String tripId){
-		Trip trip = TripManager.readtrip(tripId);
-		trip.getShape_id();
+	public static List<Point> readShapeLatAndLong(String tripId) {
+		Trip trip = readtrip(tripId);
+		if (trip == null) {
+			System.out.println("Trip not found.");
+			return null;
+		}
+
 		List<Shape> shapes = trip.getShapes();
-		List<List<Double>> latAndLong = new ArrayList();
-		  for (Shape shape : shapes) {
-	            double latitude = shape.getShape_pt_lat();
-	            double longitude = shape.getShape_pt_lon();
-	            List<Double> pair = new ArrayList<>();
-	            pair.add(latitude);
-	            pair.add(longitude);
-	            latAndLong.add(pair);
-	        }
+		List<Point> latAndLong = new ArrayList<>();
+		GeometryFactory geometryFactory = new GeometryFactory();
+
+		for (Shape shape : shapes) {
+			double latitude = shape.getShape_pt_lat();
+			double longitude = shape.getShape_pt_lon();
+			Coordinate coordinate = new Coordinate(longitude, latitude); // Longitude first, then latitude
+			Point point = geometryFactory.createPoint(coordinate);
+			latAndLong.add(point);
+		}
+
 		return latAndLong;
-		
 	}
     public static Trip readtrip(String tripId) {
         Transaction transaction = null;
