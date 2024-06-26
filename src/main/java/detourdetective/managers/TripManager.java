@@ -10,7 +10,9 @@ import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.locationtech.jts.awt.PointShapeFactory.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TripManager {
@@ -21,6 +23,22 @@ public class TripManager {
 		trip.getShape_id();
 		System.out.println(trip);
 		return null;
+	}
+	public static List<List<Double>> readShapeLatAndLong(String tripId){
+		Trip trip = TripManager.readtrip(tripId);
+		trip.getShape_id();
+		List<Shape> shapes = trip.getShapes();
+		List<List<Double>> latAndLong = new ArrayList();
+		  for (Shape shape : shapes) {
+	            double latitude = shape.getShape_pt_lat();
+	            double longitude = shape.getShape_pt_lon();
+	            List<Double> pair = new ArrayList<>();
+	            pair.add(latitude);
+	            pair.add(longitude);
+	            latAndLong.add(pair);
+	        }
+		return latAndLong;
+		
 	}
     public static Trip readtrip(String tripId) {
         Transaction transaction = null;

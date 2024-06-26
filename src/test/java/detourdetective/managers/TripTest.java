@@ -6,11 +6,20 @@ import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
 public class TripTest extends TestCase {
-    @Test
+   @Test
     public void testReadTripShapes(){
         String tripId = "JG_A4-Weekday-SDon-084600_B16_414";
         TripManager.readTripShape(tripId);
         
     }
+    
+    @Test
+    public void testReadLatAndLong(){
+        String tripId = "JG_A4-Weekday-SDon-084600_B16_414";
+        System.out.println(TripManager.readShapeLatAndLong(tripId));
+        
+        
+    }
+    
 
 }
