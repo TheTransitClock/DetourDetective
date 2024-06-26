@@ -30,7 +30,13 @@
       <artifactId>postgresql</artifactId>
       <version>42.3.1</version>
     </dependency>
-      <dependency>
+
+    <dependency>
+      <groupId>org.locationtech.jts</groupId>
+      <artifactId>jts-core</artifactId>
+      <version>1.16.1</version>
+    </dependency>
+    <dependency>
           <groupId>org.junit.jupiter</groupId>
           <artifactId>junit-jupiter</artifactId>
           <version>RELEASE</version>

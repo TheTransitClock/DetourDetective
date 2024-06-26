@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TripManager {
 	
-	public static List<Shape> readTripShaope(String tripId)
+	public static List<Shape> readTripShape(String tripId)
 	{
 		Trip trip = TripManager.readtrip(tripId);
 		trip.getShape_id();
