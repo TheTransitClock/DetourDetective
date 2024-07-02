@@ -3,78 +3,100 @@ package detourdetective.algorithm;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.operation.distance.DistanceOp;
 import java.text.ParseException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
+import org.geotools.referencing.crs.*;
 import java.util.List;
 
 public class DetourDetector {
 
-    private static final GeometryFactory gf = new GeometryFactory();
+	private static final GeometryFactory gf = new GeometryFactory();
 
-    private static final double threshold = 100;
+	private static final double threshold = 100;
 
-    private static final double countThreshold = 10;
-    
-    public static final String PLUGIN_ID = "org.locationtech.udig.tutorials.distancetool";
+	private static final double countThreshold = 10;
 
-    public static boolean detectDetours(String tripId, String vehicleId) throws ParseException {
-        // Get the list of JTS Points from the TripManager for the polyline
-        List<Point> jtsPoints = TripManager.readShapeLatAndLong(tripId);
+	public static boolean detectDetours(String tripId, String vehicleId) throws ParseException {
 
-        // Convert JTS Points to Coordinates
-        Coordinate[] polylineCoordinates = new Coordinate[jtsPoints.size()];
-        for (int i = 0; i < jtsPoints.size(); i++) {
-            Point jtsPoint = jtsPoints.get(i);
-            polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
-        }
+		// Get the list of JTS Points from the TripManager for the polyline
+		List<Point> jtsPoints = TripManager.readShapeLatAndLong(tripId);
 
-        // Create a polyline from the coordinates
-        LineString polyline = gf.createLineString(polylineCoordinates);
+		// Convert JTS Points to Coordinates
+		Coordinate[] polylineCoordinates = new Coordinate[jtsPoints.size()];
+		for (int i = 0; i < jtsPoints.size(); i++) {
+			Point jtsPoint = jtsPoints.get(i);
+			polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
+		}
 
-        // Fetch vehicle positions
-        List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
+		// Create a polyline from the coordinates
+		LineString polyline = gf.createLineString(polylineCoordinates);
 
-        // Track consecutive off-route points
-        int consecutiveOffRouteCount = 0;
+		// Fetch vehicle positions
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
 
-        // Calculate the squared distance for each vehicle position to the polyline and check for detours
-        if (vehiclePositions != null) {
-            double totalSquaredDistance = 0.0;
-            for (VehiclePosition vehiclePosition : vehiclePositions) {
-                Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(), vehiclePosition.getPosition_latitude());
-                Point vehiclePoint = gf.createPoint(vehicleCoordinates);
+		// Track consecutive off-route points
+		int consecutiveOffRouteCount = 0;
 
-                // Calculate distance
-                double distance = polyline.distance(vehiclePoint);
-                System.out.println("Distance "+distance);
-                double squaredDistance = distance * distance;
-                totalSquaredDistance=totalSquaredDistance+squaredDistance;
-                System.out.println("This is squared distance "+squaredDistance);
-                System.out.println("This is total squared distance "+totalSquaredDistance);
+		// Calculate the squared distance for each vehicle position to the polyline and
+		// check for detours
+		if (vehiclePositions != null) {
+			for (VehiclePosition vehiclePosition : vehiclePositions) {
+				Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(),
+						vehiclePosition.getPosition_latitude());
+				Point vehiclePoint = gf.createPoint(vehicleCoordinates);
 
+				// Calculate distance
+				double distance;
 
-                // Check if the squared distance exceeds the threshold
-                if (squaredDistance > threshold) {
-                    consecutiveOffRouteCount++;
-                    if (consecutiveOffRouteCount > countThreshold) {
-                        return true; // Detour detected
-                    }
-                } else {
-                    consecutiveOffRouteCount = 0; // Reset count
-                }
-            }
-        }
+				double squaredDistance = 0;
 
-        return false; // No detour detected
-    }
+				distance = DetourDetector.getDistance(vehiclePoint, polyline);
+				
+				System.out.println("The distance is " + distance);
 
+				squaredDistance = distance * distance;
+
+				// Check if the squared distance exceeds the threshold
+				if (squaredDistance > threshold) {
+					consecutiveOffRouteCount++;
+					if (consecutiveOffRouteCount > countThreshold) {
+						return true; // Detour detected
+					}
+				} else {
+					consecutiveOffRouteCount = 0; // Reset count
+				}
+			}
+		}
+
+		return false; // No detour detected
+	}
+
+	public static double getDistance(Point point, LineString line) {
+		double dist = -1.0;
+		try {
+			String code = "AUTO:42001," + point.getX() + "," + point.getY();
+			CoordinateReferenceSystem auto = CRS.decode(code);
+			// auto = CRS.decode("epsg:2470");
+			MathTransform transform = CRS.findMathTransform(DefaultGeographicCRS.WGS84, auto);
+			Geometry g3 = JTS.transform(line, transform);
+			Geometry g4 = JTS.transform(point, transform);
+
+			Coordinate[] c = DistanceOp.nearestPoints(g4, g3);
+
+			Coordinate c1 = new Coordinate();
+			// System.out.println(c[1].distance(g4.getCoordinate()));
+			JTS.transform(c[1], c1, transform.inverse());
+			// System.out.println(geometryFactory.createPoint(c1));
+			dist = JTS.orthodromicDistance(point.getCoordinate(), c1, DefaultGeographicCRS.WGS84);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dist;
+	}
 
 }
-
-
-
-
-
