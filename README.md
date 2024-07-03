@@ -1,2 +1,2 @@
 # DetourDetective
-Detect detours on transit systems.
+Detect detours on public transit systems.
