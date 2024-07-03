@@ -1,102 +1,49 @@
 package detourdetective.algorithm;
 
-import detourdetective.entities.VehiclePosition;
-import detourdetective.managers.TripManager;
-import detourdetective.managers.VehiclePositionManager;
-import org.locationtech.jts.geom.*;
-import org.locationtech.jts.operation.distance.DistanceOp;
-import java.text.ParseException;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
-import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
-import org.geotools.referencing.crs.*;
+/*
+ * This file is part of detourdective.org
+ * 
+ * Transitime.org is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License (GPL) as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * detourdective.org is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with detourdective.org .  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
+
 import java.util.List;
+import org.locationtech.jts.geom.*;
 
-public class DetourDetector {
+/**
+ * Defines the interface for detecting detours. To create detour detection using
+ * an alternate method simply implement this interface and configure
+ * DetourDetectorFactory to instantiate the new class when a
+ * DetourDetector is needed.
+ *
+ * @Author Andrew Cunningham
+ *
+ */
+public interface DetourDetector {
+    /**
+     * Detects detours for the given trip. This interface might need to be
+     * changed in the future to return more detailed detour information.
+     * 
+     * @param tripId the ID of the trip
+     * @param vehicleId the ID of the vehicle
+     * @return true if a detour is detected, false otherwise
+     * @throws ParseException if there is an error parsing the trip or vehicle data
+     */
+    public boolean detectDetours(String tripId, String vehicleId);
 
-	private static final GeometryFactory gf = new GeometryFactory();
 
-	private static final double threshold = 100;
 
-	private static final double countThreshold = 10;
-
-	public static boolean detectDetours(String tripId, String vehicleId) throws ParseException {
-
-		// Get the list of JTS Points from the TripManager for the polyline
-		List<Point> jtsPoints = TripManager.readShapeLatAndLong(tripId);
-
-		// Convert JTS Points to Coordinates
-		Coordinate[] polylineCoordinates = new Coordinate[jtsPoints.size()];
-		for (int i = 0; i < jtsPoints.size(); i++) {
-			Point jtsPoint = jtsPoints.get(i);
-			polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
-		}
-
-		// Create a polyline from the coordinates
-		LineString polyline = gf.createLineString(polylineCoordinates);
-
-		// Fetch vehicle positions
-		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
-
-		// Track consecutive off-route points
-		int consecutiveOffRouteCount = 0;
-
-		// Calculate the squared distance for each vehicle position to the polyline and
-		// check for detours
-		if (vehiclePositions != null) {
-			for (VehiclePosition vehiclePosition : vehiclePositions) {
-				Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(),
-						vehiclePosition.getPosition_latitude());
-				Point vehiclePoint = gf.createPoint(vehicleCoordinates);
-
-				// Calculate distance
-				double distance;
-
-				double squaredDistance = 0;
-
-				distance = DetourDetector.getDistance(vehiclePoint, polyline);
-				
-				System.out.println("The distance is " + distance);
-
-				squaredDistance = distance * distance;
-
-				// Check if the squared distance exceeds the threshold
-				if (squaredDistance > threshold) {
-					consecutiveOffRouteCount++;
-					if (consecutiveOffRouteCount > countThreshold) {
-						return true; // Detour detected
-					}
-				} else {
-					consecutiveOffRouteCount = 0; // Reset count
-				}
-			}
-		}
-
-		return false; // No detour detected
-	}
-
-	public static double getDistance(Point point, LineString line) {
-		double dist = -1.0;
-		try {
-			String code = "AUTO:42001," + point.getX() + "," + point.getY();
-			CoordinateReferenceSystem auto = CRS.decode(code);
-			// auto = CRS.decode("epsg:2470");
-			MathTransform transform = CRS.findMathTransform(DefaultGeographicCRS.WGS84, auto);
-			Geometry g3 = JTS.transform(line, transform);
-			Geometry g4 = JTS.transform(point, transform);
-
-			Coordinate[] c = DistanceOp.nearestPoints(g4, g3);
-
-			Coordinate c1 = new Coordinate();
-			// System.out.println(c[1].distance(g4.getCoordinate()));
-			JTS.transform(c[1], c1, transform.inverse());
-			// System.out.println(geometryFactory.createPoint(c1));
-			dist = JTS.orthodromicDistance(point.getCoordinate(), c1, DefaultGeographicCRS.WGS84);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dist;
-	}
-
+    public boolean detectDetours(List<Point> tripShape, List<Point> avlPoints);
 }

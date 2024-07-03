@@ -1,21 +1,14 @@
 package detourdetective.algorithm;
 
-import detourdetective.entities.VehiclePosition;
-import detourdetective.managers.TripManager;
-import detourdetective.managers.VehiclePositionManager;
+import detourdetective.algorithm.DetourDetector;
+import detourdetective.algorithm.DetourDetectorFactory;
 import junit.framework.TestCase;
+import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
-import org.junit.jupiter.api.Test;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static detourdetective.algorithm.DetourDetector.detectDetours;
+import org.locationtech.jts.io.ParseException;
 
 public class DistanceToPoylineTest extends TestCase {
 	@Test
@@ -47,8 +40,10 @@ public class DistanceToPoylineTest extends TestCase {
 	public void testDetourDetectionInPlace() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
-
-		boolean detourDetected = detectDetours(tripBus766, vehicleId);
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance();
+		
+		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		
 		if (detourDetected) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
 		} else {
@@ -62,8 +57,8 @@ public class DistanceToPoylineTest extends TestCase {
 	public void testDetourDetectionNotInPlace() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "766";
-
-		boolean detourDetected = detectDetours(tripBus766, vehicleId);
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance();
+		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
 		} else {
