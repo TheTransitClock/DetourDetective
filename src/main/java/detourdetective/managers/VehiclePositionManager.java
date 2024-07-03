@@ -10,10 +10,11 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VehiclePositionManager {
-    public static List<VehiclePosition> readtripVehiclePosition(String tripId) {
+    public static List<VehiclePosition> readtripVehiclePosition(String tripId, String vehicleId) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
@@ -22,10 +23,17 @@ public class VehiclePositionManager {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
             Root<VehiclePosition> root = cr.from(VehiclePosition.class);
-            cr.select(root).where(cb.like(root.get("trip_id"), tripId));
+
+            // Constructing the query predicate
+            Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
+            Predicate vehicleIdPredicate = cb.like(root.get("vehicle_id"), vehicleId);
+            Predicate combinedPredicate = cb.and(tripIdPredicate, vehicleIdPredicate);
+
+            cr.select(root).where(combinedPredicate);
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
+
             // commit transaction
             transaction.commit();
             return results;
@@ -66,7 +74,6 @@ public class VehiclePositionManager {
             return null;
         }
     }
-
 
 
 

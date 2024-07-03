@@ -22,7 +22,7 @@ public class VehiclePositionTest extends TestCase {
     }
     @Test
     public void test_getReadTrips(){
-        List<VehiclePosition> trips = VehiclePositionManager.readtripVehiclePosition("JG_A4-Weekday-SDon-084600_B16_414");
+        List<VehiclePosition> trips = VehiclePositionManager.readtripVehiclePosition("JG_A4-Weekday-SDon-084600_B16_414","766");
         for (VehiclePosition position : trips) {
             System.out.println(position);
         }
