@@ -22,37 +22,27 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	private static final double countThreshold = 10;
 	
 	@Override 
-	public boolean detectDetours(List<Point> tripShape, List<Point> avlPoints)
+	public boolean detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
 	{
-		return true;
-	}
-
- @Override
-	public boolean detectDetours(String tripId, String vehicleId)  {
-
-		// Get the list of JTS Points from the TripManager for the polyline
-		List<Point> jtsPoints = TripManager.readShapeLatAndLong(tripId);
 
 		// Convert JTS Points to Coordinates
-		Coordinate[] polylineCoordinates = new Coordinate[jtsPoints.size()];
-		for (int i = 0; i < jtsPoints.size(); i++) {
-			Point jtsPoint = jtsPoints.get(i);
+		Coordinate[] polylineCoordinates = new Coordinate[tripShape.size()];
+		for (int i = 0; i < tripShape.size(); i++) {
+			Point jtsPoint = tripShape.get(i);
 			polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
 		}
 
 		// Create a polyline from the coordinates
 		LineString polyline = gf.createLineString(polylineCoordinates);
 
-		// Fetch vehicle positions
-		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
 
 		// Track consecutive off-route points
 		int consecutiveOffRouteCount = 0;
 
 		// Calculate the squared distance for each vehicle position to the polyline and
 		// check for detours
-		if (vehiclePositions != null) {
-			for (VehiclePosition vehiclePosition : vehiclePositions) {
+		if (avlPoints != null) {
+			for (VehiclePosition vehiclePosition : avlPoints) {
 				Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(),
 						vehiclePosition.getPosition_latitude());
 				Point vehiclePoint = gf.createPoint(vehicleCoordinates);
@@ -63,7 +53,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				double squaredDistance = 0;
 
 				distance = this.getDistance(vehiclePoint, polyline);
-				
+
 				System.out.println("The distance is " + distance);
 
 				squaredDistance = distance * distance;
@@ -81,6 +71,18 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		}
 
 		return false; // No detour detected
+	}
+
+ @Override
+	public boolean detectDetours(String tripId, String vehicleId)  {
+
+		// Get the list of JTS Points from the TripManager for the polyline
+		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
+
+		// Fetch vehicle positions
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
+
+	 return detectDetours(tripShape, vehiclePositions);
 	}
 
 	public double getDistance(Point point, LineString line) {
