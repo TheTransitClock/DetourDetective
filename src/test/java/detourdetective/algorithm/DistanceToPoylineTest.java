@@ -37,10 +37,24 @@ public class DistanceToPoylineTest extends TestCase {
 	Bus that went on a detour.
 	 */
 	@Test
-	public void testDetourDetectionInPlace() throws ParseException, java.text.ParseException {
+	public void testDetourDetectionInPlaceWithDefault() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
-		DetourDetector detourDetector=DetourDetectorFactory.getInstance();
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+		
+		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		
+		if (detourDetected) {
+			System.out.println("Detour detected for Vehicle " + vehicleId);
+		} else {
+			System.out.println("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	@Test
+	public void testDetourDetectionInPlaceWithDescreteFrechet() throws ParseException, java.text.ParseException {
+		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
+		String vehicleId = "766";
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		
 		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		
@@ -54,11 +68,53 @@ public class DistanceToPoylineTest extends TestCase {
 	Bus that didn't on a detour.
 	 */
 	@Test
-	public void testDetourDetectionNotInPlace() throws ParseException, java.text.ParseException {
+	public void testDetourDetectionNotInPlaceWithDefault() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "766";
-		DetourDetector detourDetector=DetourDetectorFactory.getInstance();
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		if (detourDetected) {
+			System.out.println("Detour detected for Vehicle " + vehicleId);
+		} else {
+			System.out.println("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	@Test
+	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() throws ParseException, java.text.ParseException {
+		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
+		String vehicleId = "766";
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
+		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		if (detourDetected) {
+			System.out.println("Detour detected for Vehicle " + vehicleId);
+		} else {
+			System.out.println("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	/*
+	Bus that went on a detour.
+	 */
+	@Test
+	public void testDetourDetectionInPlace2() throws ParseException, java.text.ParseException {
+		String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
+		String vehicleId = "2453";
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+		boolean detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
+		if (detourDetected) {
+			System.out.println("Detour detected for Vehicle " + vehicleId);
+		} else {
+			System.out.println("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	/*
+	Bus that didn't on a detour.
+	 */
+	@Test
+	public void testDetourDetectionNotInPlace2() throws ParseException, java.text.ParseException {
+		String tripBus2472 = "UP_A4-Weekday-SDon-140000_X2737_733";
+		String vehicleId = "2457";
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+		boolean detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
 		if (detourDetected) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
 		} else {

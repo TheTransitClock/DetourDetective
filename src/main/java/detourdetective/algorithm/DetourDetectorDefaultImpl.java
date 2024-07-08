@@ -60,6 +60,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 				// Check if the squared distance exceeds the threshold
 				if (squaredDistance > threshold) {
+					System.out.println("The squared distance is " + squaredDistance);
 					consecutiveOffRouteCount++;
 					if (consecutiveOffRouteCount > countThreshold) {
 						return true; // Detour detected
@@ -73,7 +74,17 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		return false; // No detour detected
 	}
 
- @Override
+	@Override
+	public Point findDetourStart(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+		return null;
+	}
+
+	@Override
+	public Point findDetourEnd(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+		return null;
+	}
+
+	@Override
 	public boolean detectDetours(String tripId, String vehicleId)  {
 
 		// Get the list of JTS Points from the TripManager for the polyline

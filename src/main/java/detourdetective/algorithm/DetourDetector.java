@@ -20,6 +20,8 @@ package detourdetective.algorithm;
 
 
 import java.util.List;
+
+import detourdetective.entities.VehiclePosition;
 import org.locationtech.jts.geom.*;
 
 /**
@@ -43,7 +45,9 @@ public interface DetourDetector {
      */
     public boolean detectDetours(String tripId, String vehicleId);
 
+    public boolean detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
 
+    public Point findDetourStart(List<Point> tripShape, List<VehiclePosition> avlPoints);
 
-    public boolean detectDetours(List<Point> tripShape, List<Point> avlPoints);
+    public Point findDetourEnd(List<Point> tripShape, List<VehiclePosition> avlPoints);
 }
