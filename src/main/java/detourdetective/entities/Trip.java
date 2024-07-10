@@ -27,10 +27,7 @@ public class Trip implements Serializable {
 	}
 
 	private String shape_id;
-    @OneToMany(fetch = FetchType.EAGER, targetEntity=Shape.class)
-    @JoinColumn(name = "shape_id", referencedColumnName = "shape_id")
-    private List<Shape> shapes;
-
+   
     private static final long serialVersionUID = 1234L;
 
     public String getTrip_id() {
@@ -113,23 +110,18 @@ public class Trip implements Serializable {
         this.wheelchair_accessible = wheelchair_accessible;
     }
 
-   
-
-    @Override
+	@Override
 	public String toString() {
 		return "Trip [trip_id=" + trip_id + ", route_id=" + route_id + ", service_id=" + service_id + ", direction_id="
 				+ direction_id + ", block_id=" + block_id + ", trip_type=" + trip_type + ", trip_headsign="
 				+ trip_headsign + ", trip_short_name=" + trip_short_name + ", bikes_allowed=" + bikes_allowed
-				+ ", wheelchair_accessible=" + wheelchair_accessible + ", shape_id=" + shape_id + ", shapes=" + shapes
-				+ "]";
+				+ ", wheelchair_accessible=" + wheelchair_accessible + ", shape_id=" + shape_id + "]";
 	}
 
-	public List<Shape> getShapes() {
-        return shapes;
-    }
+   
 
-    public void setShapes(List<Shape> shapes) {
-        this.shapes = shapes;
-    }
+   
+
+	
 }
 

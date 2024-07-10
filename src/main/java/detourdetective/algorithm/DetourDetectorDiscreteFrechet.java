@@ -39,7 +39,7 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 			else
 				return false;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
     	return false;

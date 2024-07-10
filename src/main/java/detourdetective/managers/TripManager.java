@@ -28,31 +28,50 @@ public class TripManager {
 		return null;
 	}
 	public static List<Point> readShapeLatAndLong(String tripId) {
+		
 		Trip trip = readtrip(tripId);
-		if (trip == null) {
-			System.out.println("Trip not found.");
-			return null;
-		}
-
-		List<Shape> shapes = trip.getShapes();
 		List<Point> latAndLong = new ArrayList<>();
-		GeometryFactory geometryFactory = new GeometryFactory();
-
-		for (Shape shape : shapes) {
-			double latitude = shape.getShape_pt_lat();
-			double longitude = shape.getShape_pt_lon();
-			Coordinate coordinate = new Coordinate(longitude, latitude); // Longitude first, then latitude
-			Point point = geometryFactory.createPoint(coordinate);
-			latAndLong.add(point);
+		if(trip!=null)
+		{
+			List<Shape> shapes = readShape(trip.getShape_id());
+	
+			GeometryFactory geometryFactory = new GeometryFactory();
+	
+			for (Shape shape : shapes) {
+				double latitude = shape.getShape_pt_lat();
+				double longitude = shape.getShape_pt_lon();
+				Coordinate coordinate = new Coordinate(longitude, latitude); // Longitude first, then latitude
+				Point point = geometryFactory.createPoint(coordinate);
+				latAndLong.add(point);
+			}
 		}
-
 		return latAndLong;
 	}
-    public static Trip readtrip(String tripId) {
-        Transaction transaction = null;
+    private static List<Shape> readShape(String shape_id) {
+		// TODO Auto-generated method stub
+    	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Shape> cr = cb.createQuery(Shape.class);
+            Root<Shape> root = cr.from(Shape.class);
+            cr.select(root).where(cb.like(root.get("shape_id"), shape_id));
+
+            Query<Shape> query = session.createQuery(cr);
+            List<Shape> results = query.getResultList();
+            
+            return results;
+          
+        } catch (Exception e) {
+           
+            e.printStackTrace();
+            return null;
+        }
+	
+	}
+	public static Trip readtrip(String tripId) {
+       
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
            
-
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Trip> cr = cb.createQuery(Trip.class);
             Root<Trip> root = cr.from(Trip.class);
