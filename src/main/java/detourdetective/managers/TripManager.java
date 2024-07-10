@@ -54,7 +54,7 @@ public class TripManager {
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Shape> cr = cb.createQuery(Shape.class);
             Root<Shape> root = cr.from(Shape.class);
-            cr.select(root).where(cb.like(root.get("shape_id"), shape_id));
+            cr.select(root).where(cb.equal(root.get("shape_id"), shape_id));
 
             Query<Shape> query = session.createQuery(cr);
             List<Shape> results = query.getResultList();
