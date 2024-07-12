@@ -113,6 +113,7 @@ public class DistanceToPoylineTest extends TestCase {
 	public void testDetourDetectionNotInPlace2() throws ParseException, java.text.ParseException {
 		String tripBus2472 = "UP_A4-Weekday-SDon-140000_X2737_733";
 		String vehicleId = "2457";
+		
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		boolean detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
 		if (detourDetected) {
