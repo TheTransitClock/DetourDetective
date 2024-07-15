@@ -2,6 +2,8 @@ package detourdetective.algorithm;
 
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorFactory;
+import detourdetective.entities.VehiclePosition;
+import detourdetective.managers.TripManager;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -9,6 +11,13 @@ import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static detourdetective.managers.VehiclePositionManager.tripsByDate;
 
 public class DistanceToPoylineTest extends TestCase {
 	@Test
@@ -120,6 +129,27 @@ public class DistanceToPoylineTest extends TestCase {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	@Test
+	public void testForDetoursWithGivenDateUsingDefaultAlgorithm() throws ParseException, java.text.ParseException {
+		LocalDate date = LocalDate.of(2024, 3, 27);
+
+		List<VehiclePosition> tripsList = tripsByDate(date);
+		Set<VehiclePosition> tripSet = new HashSet<>(tripsList);
+
+		// Iterate over the trips and check for detours
+		for (VehiclePosition position : tripSet) {
+			DetourDetector detourDetector = DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+			String tripId = position.getTrip_id();
+			String vehicleId = position.getVehicle_id();
+
+			boolean detourDetected = detourDetector.detectDetours(tripId, vehicleId);
+			if (detourDetected) {
+				System.out.println("Detour detected for Vehicle " + vehicleId + " on Trip " + tripId);
+			} else {
+				System.out.println("No detour detected for Vehicle " + vehicleId + " on Trip " + tripId);
+			}
 		}
 	}
 

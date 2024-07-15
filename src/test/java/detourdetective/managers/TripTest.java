@@ -5,6 +5,8 @@ import detourdetective.entities.Trip;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 public class TripTest extends TestCase {
    @Test
     public void testReadTripShapes(){
@@ -19,6 +21,13 @@ public class TripTest extends TestCase {
         System.out.println(TripManager.readShapeLatAndLong(tripId));
         
         
+    }
+    @Test
+    public void testTripsByDate(){
+        LocalDate date = LocalDate.of(2024,03,27);
+        System.out.println(VehiclePositionManager.tripsByDate(date));
+
+
     }
     
 

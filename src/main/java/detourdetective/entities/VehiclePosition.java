@@ -25,6 +25,33 @@ public class VehiclePosition {
 
     private LocalDate trip_start_date;
 
+    public VehiclePosition(){
+
+    }
+
+    public VehiclePosition(int oid, String trip_id, String route_id, String trip_start_time, String vehicle_id, String vehicle_label, String vehicle_license_plate, Double position_latitude, Double position_longitude, Double position_bearing, Double position_speed, String occupancy_status, LocalDate timestamp, LocalDate trip_start_date) {
+        this.oid = oid;
+        this.trip_id = trip_id;
+        this.route_id = route_id;
+        this.trip_start_time = trip_start_time;
+        this.vehicle_id = vehicle_id;
+        this.vehicle_label = vehicle_label;
+        this.vehicle_license_plate = vehicle_license_plate;
+        this.position_latitude = position_latitude;
+        this.position_longitude = position_longitude;
+        this.position_bearing = position_bearing;
+        this.position_speed = position_speed;
+        this.occupancy_status = occupancy_status;
+        this.timestamp = timestamp;
+        this.trip_start_date = trip_start_date;
+    }
+
+    public VehiclePosition(String trip_id, String route_id) {
+        this.trip_id = trip_id;
+        this.route_id = route_id;
+
+    }
+
     public int getOid() {
         return oid;
     }

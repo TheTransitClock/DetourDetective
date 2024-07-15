@@ -11,7 +11,9 @@ import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class VehiclePositionManager {
     public static List<VehiclePosition> readtripVehiclePosition(String tripId, String vehicleId) {
@@ -73,6 +75,33 @@ public class VehiclePositionManager {
             }
             return null;
         }
+    }
+    public static List<VehiclePosition> tripsByDate(LocalDate date){
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
+            Root<VehiclePosition> root = cr.from(VehiclePosition.class);
+            cr.select(root).where(cb.equal(root.get("timestamp"), date));
+
+            Query<VehiclePosition> query = session.createQuery(cr);
+            List<VehiclePosition> results = query.getResultList();
+
+            return results;
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static Set<VehiclePosition> tripIdAndVehicleIdforGivenDate(LocalDate date){
+        List<VehiclePosition> trip = tripsByDate(date);
+        Set<VehiclePosition> tripIdAndVehicleId= new HashSet<>();
+        for(VehiclePosition position : trip){
+            tripIdAndVehicleId.add(new VehiclePosition(position.getTrip_id(), position.getVehicle_id()));
+        }
+        return tripIdAndVehicleId;
     }
 
 
