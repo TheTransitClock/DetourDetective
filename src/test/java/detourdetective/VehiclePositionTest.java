@@ -27,6 +27,7 @@ public class VehiclePositionTest extends TestCase {
             System.out.println(position);
         }
     }
+    
 
 
 

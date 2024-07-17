@@ -14,9 +14,8 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 
 public class TripManager {
 	
@@ -92,4 +91,20 @@ public class TripManager {
             return null;
         }
     }
+	
+	public static List<Trip> getActiveTrips(String routeId, Date date){
+		
+		return null;
+		
+	}
+	
+	public static List<Trip> getActiveTrips(Date date){
+		
+		return null;
+		
+	}
+	
+
+
+
 }

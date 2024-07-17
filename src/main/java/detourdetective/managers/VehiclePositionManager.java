@@ -3,6 +3,7 @@ package detourdetective.managers;
 import detourdetective.HibernateUtil;
 import detourdetective.entities.Shape;
 import detourdetective.entities.Trip;
+import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
@@ -76,7 +77,7 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    public static List<VehiclePosition> tripsByDate(LocalDate date){
+    public static Set<TripVehicle> tripsByDate(LocalDate date){
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -87,7 +88,13 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
 
-            return results;
+            Set<TripVehicle> tripSet = new HashSet<>();
+
+ 
+    		for (VehiclePosition position : results) {
+    			tripSet.add(new TripVehicle(position));
+    		}
+    		return tripSet;
 
         } catch (Exception e) {
 
@@ -95,14 +102,8 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    public static Set<VehiclePosition> tripIdAndVehicleIdforGivenDate(LocalDate date){
-        List<VehiclePosition> trip = tripsByDate(date);
-        Set<VehiclePosition> tripIdAndVehicleId= new HashSet<>();
-        for(VehiclePosition position : trip){
-            tripIdAndVehicleId.add(new VehiclePosition(position.getTrip_id(), position.getVehicle_id()));
-        }
-        return tripIdAndVehicleId;
-    }
+   
+   
 
 
 

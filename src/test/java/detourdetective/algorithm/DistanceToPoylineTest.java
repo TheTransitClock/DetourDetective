@@ -2,6 +2,7 @@ package detourdetective.algorithm;
 
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorFactory;
+import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import junit.framework.TestCase;
@@ -17,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static detourdetective.managers.VehiclePositionManager.tripsByDate;
+import detourdetective.managers.VehiclePositionManager;
 
 public class DistanceToPoylineTest extends TestCase {
 	@Test
@@ -135,21 +136,10 @@ public class DistanceToPoylineTest extends TestCase {
 	public void testForDetoursWithGivenDateUsingDefaultAlgorithm() throws ParseException, java.text.ParseException {
 		LocalDate date = LocalDate.of(2024, 3, 27);
 
-		List<VehiclePosition> tripsList = tripsByDate(date);
-		Set<VehiclePosition> tripSet = new HashSet<>(tripsList);
+		Set<TripVehicle> tripSet = VehiclePositionManager.tripsByDate(date);
 
-		// Iterate over the trips and check for detours
-		for (VehiclePosition position : tripSet) {
-			DetourDetector detourDetector = DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-			String tripId = position.getTrip_id();
-			String vehicleId = position.getVehicle_id();
-
-			boolean detourDetected = detourDetector.detectDetours(tripId, vehicleId);
-			if (detourDetected) {
-				System.out.println("Detour detected for Vehicle " + vehicleId + " on Trip " + tripId);
-			} else {
-				System.out.println("No detour detected for Vehicle " + vehicleId + " on Trip " + tripId);
-			}
+		for (TripVehicle vehicle : tripSet) {
+			System.out.println(vehicle);
 		}
 	}
 
