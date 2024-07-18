@@ -21,6 +21,9 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	private static final double threshold = 100;
 
 	private static final double countThreshold = 10;
+
+	private static boolean detourDetected = false;
+	private List<VehiclePosition> rememberedOffRoutePoints = null; // Instance variable to remember off-route points
 	
 	@Override 
 	public List<VehiclePosition> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
@@ -66,9 +69,10 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					System.out.println("The squared distance is " + squaredDistance);
 					consecutiveOffRouteCount++;
 					offRoutePoints.add(vehiclePosition);
-					if (consecutiveOffRouteCount > countThreshold) {
+					if (!detourDetected && consecutiveOffRouteCount > countThreshold) {
+						detourDetected = true;
 						//System.out.println("Detour in place for vehicle " + vehiclePosition.getVehicle_id());
-						return offRoutePoints; // Detour detected
+						rememberedOffRoutePoints = new ArrayList<>(offRoutePoints);
 					}
 				} else {
 					consecutiveOffRouteCount = 0; // Reset count
@@ -76,9 +80,14 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				}
 			}
 		}
+		if (detourDetected) {
+			System.out.println("Detour in place for vehicle ");
+			return rememberedOffRoutePoints; // Return remembered off-route points if any detour was detected
+		}
 
-		//System.out.println("Detour not in place for vehicle " + avlPoints.get(0).toString());
-		return null; // No detour detected
+		System.out.println("No detour detected.");
+		rememberedOffRoutePoints = null; // Reset remembered points if no detour detected
+		return rememberedOffRoutePoints; // No detour detected
 
 	}
 
