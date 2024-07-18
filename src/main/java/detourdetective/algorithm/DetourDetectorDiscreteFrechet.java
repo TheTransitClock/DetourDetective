@@ -30,6 +30,11 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
     		avlPointsConverted.add(convertVehiclePosition(avlPoints.get(i)));
     		logger.debug(avlPointsConverted.get(avlPointsConverted.size()-1));
 		}
+		// Ensure the lists are not empty before proceeding
+		if (tripPointsConverted.isEmpty() || avlPointsConverted.isEmpty()) {
+			logger.error("Trip shape or AVL points list is empty.");
+			return offRoutePoints; // Return empty list as no detour detected
+		}
     	try {
     		DiscreteFrechetDistance discreteFrechetDistance=new DiscreteFrechetDistance();
     		discreteFrechetDistance.setTimeSeriesP(tripPointsConverted);
@@ -40,7 +45,7 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 				if (frechetDistance > DETOURTRESHOLD) {
 					consecutiveOffRouteCount++;
 					offRoutePoints.add(avlPoints.get(i));
-					if (consecutiveOffRouteCount > 1) {
+					if (consecutiveOffRouteCount > countThreshold) {
 						logger.info("Detour detected.");
 						return offRoutePoints; // Detour detected
 					}
@@ -52,7 +57,7 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 		} catch (Exception e) {
 			logger.error("Error computing Frechet distance", e);
 		}
-
+		offRoutePoints = null;
 		return offRoutePoints; // No detour detected if list is empty
 	}
     private sbahr.Point convertVehiclePosition(VehiclePosition vehiclePosition)

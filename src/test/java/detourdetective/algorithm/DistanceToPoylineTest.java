@@ -66,7 +66,7 @@ public class DistanceToPoylineTest extends TestCase {
 	@Test
 	public void testDetourDetectionInPlaceWithDescreteFrechet() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
-		String vehicleId = "802";
+		String vehicleId = "766";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		
 		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
@@ -101,7 +101,7 @@ public class DistanceToPoylineTest extends TestCase {
 	@Test
 	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
-		String vehicleId = "766";
+		String vehicleId = "802";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
