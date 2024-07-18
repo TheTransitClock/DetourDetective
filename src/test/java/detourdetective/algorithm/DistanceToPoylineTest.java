@@ -52,10 +52,13 @@ public class DistanceToPoylineTest extends TestCase {
 		String vehicleId = "766";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		
-		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
-		
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
@@ -63,13 +66,16 @@ public class DistanceToPoylineTest extends TestCase {
 	@Test
 	public void testDetourDetectionInPlaceWithDescreteFrechet() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
-		String vehicleId = "766";
+		String vehicleId = "802";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		
-		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
-		
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
@@ -80,11 +86,14 @@ public class DistanceToPoylineTest extends TestCase {
 	@Test
 	public void testDetourDetectionNotInPlaceWithDefault() throws ParseException, java.text.ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
-		String vehicleId = "766";
+		String vehicleId = "802";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
@@ -94,9 +103,12 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "766";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
-		boolean detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
@@ -109,9 +121,12 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
 		String vehicleId = "2453";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		boolean detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
@@ -125,9 +140,12 @@ public class DistanceToPoylineTest extends TestCase {
 		String vehicleId = "2457";
 		
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		boolean detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
-		if (detourDetected) {
+		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
+		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
+			for (VehiclePosition vp : detourDetected) {
+				System.out.println("Off-route Vehicle Position: " + vp);
+			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}

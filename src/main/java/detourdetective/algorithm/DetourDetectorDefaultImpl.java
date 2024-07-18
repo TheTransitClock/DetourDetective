@@ -3,7 +3,8 @@ package detourdetective.algorithm;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
-import java.text.ParseException;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
@@ -22,7 +23,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	private static final double countThreshold = 10;
 	
 	@Override 
-	public boolean detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
+	public List<VehiclePosition> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
 	{
 
 		// Convert JTS Points to Coordinates
@@ -38,6 +39,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 		// Track consecutive off-route points
 		int consecutiveOffRouteCount = 0;
+
+		List<VehiclePosition> offRoutePoints = new ArrayList<VehiclePosition>();
 
 		// Calculate the squared distance for each vehicle position to the polyline and
 		// check for detours
@@ -62,16 +65,21 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				if (squaredDistance > threshold) {
 					System.out.println("The squared distance is " + squaredDistance);
 					consecutiveOffRouteCount++;
+					offRoutePoints.add(vehiclePosition);
 					if (consecutiveOffRouteCount > countThreshold) {
-						return true; // Detour detected
+						//System.out.println("Detour in place for vehicle " + vehiclePosition.getVehicle_id());
+						return offRoutePoints; // Detour detected
 					}
 				} else {
 					consecutiveOffRouteCount = 0; // Reset count
+					offRoutePoints.clear();// Clear off-route points as we're back on route
 				}
 			}
 		}
 
-		return false; // No detour detected
+		//System.out.println("Detour not in place for vehicle " + avlPoints.get(0).toString());
+		return null; // No detour detected
+
 	}
 
 	@Override
@@ -85,7 +93,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public boolean detectDetours(String tripId, String vehicleId)  {
+	public List<VehiclePosition> detectDetours(String tripId, String vehicleId)  {
 
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);

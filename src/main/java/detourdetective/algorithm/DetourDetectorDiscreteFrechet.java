@@ -12,10 +12,12 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 	private static Logger logger = Logger.getLogger(DetourDetectorDiscreteFrechet.class);
 	private static final double DETOURTRESHOLD = 100;
 	private static final int R=6371*1000;
+	private static final double countThreshold = 10;
 
     @Override
-    public boolean detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
-    	
+    public List<VehiclePosition> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+		int consecutiveOffRouteCount = 0;
+		List<VehiclePosition> offRoutePoints = new ArrayList<VehiclePosition>();
     	List<sbahr.Point> tripPointsConverted=new ArrayList<sbahr.Point>();
     	logger.debug("Trip points.");
     	for (int i = 0; i < tripShape.size(); i++) {
@@ -34,17 +36,26 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
     		discreteFrechetDistance.setTimeSeriesQ(avlPointsConverted);
 			double frechetDistance=discreteFrechetDistance.computeDiscreteFrechet(discreteFrechetDistance.getTimeSeriesP(), discreteFrechetDistance.getTimeSeriesQ());
 			logger.info("Frechet distance was computed as " + frechetDistance);
-			if(frechetDistance>DETOURTRESHOLD)
-				return true;
-			else
-				return false;
+			for (int i = 0; i < avlPoints.size(); i++) {
+				if (frechetDistance > DETOURTRESHOLD) {
+					consecutiveOffRouteCount++;
+					offRoutePoints.add(avlPoints.get(i));
+					if (consecutiveOffRouteCount > 1) {
+						logger.info("Detour detected.");
+						return offRoutePoints; // Detour detected
+					}
+				} else {
+					consecutiveOffRouteCount = 0; // Reset count
+					offRoutePoints.clear(); // Clear off-route points as we're back on route
+				}
+			}
 		} catch (Exception e) {
-			
-			e.printStackTrace();
+			logger.error("Error computing Frechet distance", e);
 		}
-    	return false;
-    }
-    private sbahr.Point convertVehiclePosition(VehiclePosition vechiclePosition)
+
+		return offRoutePoints; // No detour detected if list is empty
+	}
+    private sbahr.Point convertVehiclePosition(VehiclePosition vehiclePosition)
     {
     	int dimensions[];
     	// allocating memory to array
@@ -57,8 +68,8 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 			y = R * cos(lat) * sin(lon)
     	 */
     	
-    	dimensions[0]=(int) (R* Math.cos(vechiclePosition.getPosition_latitude()) * Math.cos(vechiclePosition.getPosition_longitude()));
-    	dimensions[1]=(int) (R*Math.cos(vechiclePosition.getPosition_latitude()) * Math.sin(vechiclePosition.getPosition_longitude()));
+    	dimensions[0]=(int) (R* Math.cos(vehiclePosition.getPosition_latitude()) * Math.cos(vehiclePosition.getPosition_longitude()));
+    	dimensions[1]=(int) (R*Math.cos(vehiclePosition.getPosition_latitude()) * Math.sin(vehiclePosition.getPosition_longitude()));
     	
     	sbahr.Point outputPoint= new sbahr.Point(dimensions);
     	
