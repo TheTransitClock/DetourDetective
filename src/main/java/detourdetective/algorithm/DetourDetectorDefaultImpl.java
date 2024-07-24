@@ -6,6 +6,8 @@ import detourdetective.managers.VehiclePositionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.log4j.Logger;
 import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.JTS;
@@ -16,16 +18,19 @@ import org.locationtech.jts.operation.distance.DistanceOp;
 
 public class DetourDetectorDefaultImpl implements DetourDetector {
 
+	private static Logger logger = Logger.getLogger(DetourDetectorDefaultImpl.class);
+
 	private static final GeometryFactory gf = new GeometryFactory();
 
 	private static final double threshold = 100;
 
+	private static final double onRouteThreshold = 5;
+
 	private static final double countThreshold = 10;
 
 	private static boolean detourDetected = false;
-	private List<VehiclePosition> rememberedOffRoutePoints = null; // Instance variable to remember off-route points
 	
-	@Override 
+	@Override
 	public List<VehiclePosition> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
 	{
 
@@ -42,8 +47,11 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 		// Track consecutive off-route points
 		int consecutiveOffRouteCount = 0;
+		int consecutiveOnRouteCount = 0;
 
 		List<VehiclePosition> offRoutePoints = new ArrayList<VehiclePosition>();
+		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<VehiclePosition>();
+
 
 		// Calculate the squared distance for each vehicle position to the polyline and
 		// check for detours
@@ -60,35 +68,50 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 				distance = this.getDistance(vehiclePoint, polyline);
 
-				System.out.println("The distance is " + distance);
+				logger.info("The distance is " + distance);
 
 				squaredDistance = distance * distance;
 
 				// Check if the squared distance exceeds the threshold
 				if (squaredDistance > threshold) {
-					System.out.println("The squared distance is " + squaredDistance);
+					logger.info("The squared distance is " + squaredDistance);
 					consecutiveOffRouteCount++;
-					offRoutePoints.add(vehiclePosition);
-					if (!detourDetected && consecutiveOffRouteCount > countThreshold) {
+					consecutiveOnRouteCount = 0;
+
+					potentialOffRoutePoints.add(vehiclePosition);
+
+					if (consecutiveOffRouteCount > countThreshold) {
 						detourDetected = true;
-						//System.out.println("Detour in place for vehicle " + vehiclePosition.getVehicle_id());
-						rememberedOffRoutePoints = new ArrayList<>(offRoutePoints);
+					}
+
+					if (detourDetected) {
+						offRoutePoints.addAll(potentialOffRoutePoints);
+						potentialOffRoutePoints.clear();
+						offRoutePoints.add(vehiclePosition);
 					}
 				} else {
-					consecutiveOffRouteCount = 0; // Reset count
-					offRoutePoints.clear();// Clear off-route points as we're back on route
+					consecutiveOnRouteCount++;
+					consecutiveOffRouteCount = 0;
+
+					if (consecutiveOnRouteCount > onRouteThreshold && detourDetected) {
+						// Detour ends
+						logger.info("End of detour detected.");
+						detourDetected = false;
+						potentialOffRoutePoints.clear();
+					} else if (!detourDetected) {
+						potentialOffRoutePoints.clear();
+					}
 				}
 			}
 		}
-		if (detourDetected) {
-			System.out.println("Detour in place for vehicle ");
-			return rememberedOffRoutePoints; // Return remembered off-route points if any detour was detected
+
+		if (!offRoutePoints.isEmpty()) {
+			logger.info("Detour in place for vehicle.");
+			return offRoutePoints; // Return the detour points
 		}
 
-		System.out.println("No detour detected.");
-		rememberedOffRoutePoints = null; // Reset remembered points if no detour detected
-		return rememberedOffRoutePoints; // No detour detected
-
+		logger.info("No detour detected.");
+		return null; // No detour detected
 	}
 
 	@Override
