@@ -5,6 +5,7 @@ import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -24,14 +25,14 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final double threshold = 100;
 
-	private static final double onRouteThreshold = 5;
+	private static final double onRouteThreshold = 3;
 
 	private static final double countThreshold = 10;
 
 	private static boolean detourDetected = false;
 	
 	@Override
-	public List<VehiclePosition> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
+	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
 	{
 
 		// Convert JTS Points to Coordinates
@@ -49,7 +50,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		int consecutiveOffRouteCount = 0;
 		int consecutiveOnRouteCount = 0;
 
-		List<VehiclePosition> offRoutePoints = new ArrayList<VehiclePosition>();
+		List<List<VehiclePosition>> offRoutePoints = new ArrayList<>();
 		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<VehiclePosition>();
 
 
@@ -83,12 +84,6 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (consecutiveOffRouteCount > countThreshold) {
 						detourDetected = true;
 					}
-
-					if (detourDetected) {
-						offRoutePoints.addAll(potentialOffRoutePoints);
-						potentialOffRoutePoints.clear();
-						offRoutePoints.add(vehiclePosition);
-					}
 				} else {
 					consecutiveOnRouteCount++;
 					consecutiveOffRouteCount = 0;
@@ -97,12 +92,18 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 						// Detour ends
 						logger.info("End of detour detected.");
 						detourDetected = false;
+						offRoutePoints.add(new ArrayList<>(potentialOffRoutePoints));
 						potentialOffRoutePoints.clear();
 					} else if (!detourDetected) {
 						potentialOffRoutePoints.clear();
 					}
 				}
 			}
+		}
+
+		// If detour is still ongoing at the end of the points, add it to the list
+		if (detourDetected && !potentialOffRoutePoints.isEmpty()) {
+			offRoutePoints.add(new ArrayList<>(potentialOffRoutePoints));
 		}
 
 		if (!offRoutePoints.isEmpty()) {
@@ -125,7 +126,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public List<VehiclePosition> detectDetours(String tripId, String vehicleId)  {
+	public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId)  {
 
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);

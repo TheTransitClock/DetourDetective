@@ -51,12 +51,12 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
@@ -68,12 +68,12 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
-		
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
@@ -88,10 +88,10 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
@@ -103,10 +103,10 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
@@ -121,10 +121,10 @@ public class DistanceToPoylineTest extends TestCase {
 		String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
 		String vehicleId = "2453";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
@@ -140,10 +140,10 @@ public class DistanceToPoylineTest extends TestCase {
 		String vehicleId = "2457";
 		
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<VehiclePosition> detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (VehiclePosition vp : detourDetected) {
+			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
 		} else {
