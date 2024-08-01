@@ -1,10 +1,7 @@
 package detourdetective.algorithm;
 
-import detourdetective.algorithm.DetourDetector;
-import detourdetective.algorithm.DetourDetectorFactory;
 import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
-import detourdetective.managers.TripManager;
 import junit.framework.TestCase;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
@@ -14,13 +11,12 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import detourdetective.managers.VehiclePositionManager;
 
-public class DistanceToPoylineTest extends TestCase {
+public class DetourDetectorTesting extends TestCase {
 	@Test
 	public void testDistanceBetweenPointAndPolyline() throws ParseException {
 		// create a geometry factory
@@ -56,8 +52,11 @@ public class DistanceToPoylineTest extends TestCase {
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
+			for (List<VehiclePosition> detour : detourDetected) {
+				System.out.println("New detour:");
+				for (VehiclePosition vp : detour) {
+					System.out.println("Off-route Vehicle Position: (" + vp.getPosition_latitude() + ", " + vp.getPosition_longitude() + ")");
+				}
 			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
@@ -118,14 +117,20 @@ public class DistanceToPoylineTest extends TestCase {
 	 */
 	@Test
 	public void testDetourDetectionInPlace2() throws ParseException, java.text.ParseException {
-		String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
+		String tripBus2453 = "UP_A4-Weekday-SDon-036100_X2737_704";
+		//String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
+		//String tripBus2472 = "UP_A4-Weekday-SDon-140000_X2737_733";
+		//String vehicleId = "2457";
 		String vehicleId = "2453";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
+			for (List<VehiclePosition> detour : detourDetected) {
+				System.out.println("New detour:");
+				for (VehiclePosition vp : detour) {
+					System.out.println("Off-route Vehicle Position: (" + vp.getPosition_latitude() + ", " + vp.getPosition_longitude() + ")");
+				}
 			}
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
@@ -136,11 +141,11 @@ public class DistanceToPoylineTest extends TestCase {
 	 */
 	@Test
 	public void testDetourDetectionNotInPlace2() throws ParseException, java.text.ParseException {
-		String tripBus2472 = "UP_A4-Weekday-SDon-140000_X2737_733";
+		String tripBus2453NoDetour = "UP_A4-Weekday-SDon-043700_X2737_720";
 		String vehicleId = "2457";
 		
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2472, vehicleId);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453NoDetour, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			System.out.println("Detour detected for Vehicle " + vehicleId);
 			for (List<VehiclePosition> vp : detourDetected) {

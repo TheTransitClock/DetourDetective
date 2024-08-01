@@ -25,16 +25,13 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final double threshold = 100;
 
-	private static final double onRouteThreshold = 3;
+	private static final double onRouteThreshold = 2;
 
 	private static final double countThreshold = 10;
 
 	private static boolean detourDetected = false;
-	
-	@Override
-	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints)
-	{
 
+	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
 		// Convert JTS Points to Coordinates
 		Coordinate[] polylineCoordinates = new Coordinate[tripShape.size()];
 		for (int i = 0; i < tripShape.size(); i++) {
@@ -45,33 +42,29 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		// Create a polyline from the coordinates
 		LineString polyline = gf.createLineString(polylineCoordinates);
 
-
 		// Track consecutive off-route points
 		int consecutiveOffRouteCount = 0;
 		int consecutiveOnRouteCount = 0;
 
-		List<List<VehiclePosition>> offRoutePoints = new ArrayList<>();
-		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<VehiclePosition>();
 
+		List<List<VehiclePosition>> detours = new ArrayList<>();
+		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<>();
+		List<VehiclePosition> offRoutePoints = new ArrayList<>();
 
-		// Calculate the squared distance for each vehicle position to the polyline and
-		// check for detours
+		// Calculate the squared distance for each vehicle position to the polyline and check for detours
 		if (avlPoints != null) {
 			for (VehiclePosition vehiclePosition : avlPoints) {
-				Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(),
-						vehiclePosition.getPosition_latitude());
+				Coordinate vehicleCoordinates = new Coordinate(vehiclePosition.getPosition_longitude(), vehiclePosition.getPosition_latitude());
 				Point vehiclePoint = gf.createPoint(vehicleCoordinates);
 
 				// Calculate distance
-				double distance;
-
-				double squaredDistance = 0;
-
-				distance = this.getDistance(vehiclePoint, polyline);
+				double distance = this.getDistance(vehiclePoint, polyline);
+				double squaredDistance = distance * distance;
 
 				logger.info("The distance is " + distance);
 
-				squaredDistance = distance * distance;
+				logger.info(vehicleCoordinates.getX());
+				logger.info(vehicleCoordinates.getY());
 
 				// Check if the squared distance exceeds the threshold
 				if (squaredDistance > threshold) {
@@ -84,6 +77,11 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (consecutiveOffRouteCount > countThreshold) {
 						detourDetected = true;
 					}
+					if (detourDetected) {
+						offRoutePoints.addAll(potentialOffRoutePoints);
+						potentialOffRoutePoints.clear();
+						offRoutePoints.add(vehiclePosition);
+					}
 				} else {
 					consecutiveOnRouteCount++;
 					consecutiveOffRouteCount = 0;
@@ -92,23 +90,26 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 						// Detour ends
 						logger.info("End of detour detected.");
 						detourDetected = false;
-						offRoutePoints.add(new ArrayList<>(potentialOffRoutePoints));
-						potentialOffRoutePoints.clear();
+						if (!offRoutePoints.isEmpty()) {
+							detours.add(new ArrayList<>(offRoutePoints));
+							offRoutePoints.clear();
+						}
 					} else if (!detourDetected) {
 						potentialOffRoutePoints.clear();
 					}
 				}
+
 			}
 		}
 
 		// If detour is still ongoing at the end of the points, add it to the list
-		if (detourDetected && !potentialOffRoutePoints.isEmpty()) {
-			offRoutePoints.add(new ArrayList<>(potentialOffRoutePoints));
+		if (detourDetected && !offRoutePoints.isEmpty()) {
+			detours.add(new ArrayList<>(offRoutePoints));
 		}
 
-		if (!offRoutePoints.isEmpty()) {
+		if (!detours.isEmpty()) {
 			logger.info("Detour in place for vehicle.");
-			return offRoutePoints; // Return the detour points
+			return detours; // Return the detour points
 		}
 
 		logger.info("No detour detected.");
