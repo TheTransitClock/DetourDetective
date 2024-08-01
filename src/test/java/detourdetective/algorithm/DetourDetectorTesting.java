@@ -3,6 +3,8 @@ package detourdetective.algorithm;
 import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -10,6 +12,7 @@ import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +20,8 @@ import java.util.Set;
 import detourdetective.managers.VehiclePositionManager;
 
 public class DetourDetectorTesting extends TestCase {
+
+	private static Logger logger = Logger.getLogger(DetourDetectorTesting.class);
 	@Test
 	public void testDistanceBetweenPointAndPolyline() throws ParseException {
 		// create a geometry factory
@@ -51,15 +56,20 @@ public class DetourDetectorTesting extends TestCase {
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> detour : detourDetected) {
-				System.out.println("New detour:");
-				for (VehiclePosition vp : detour) {
-					System.out.println("Off-route Vehicle Position: (" + vp.getPosition_latitude() + ", " + vp.getPosition_longitude() + ")");
-				}
+			logger.info("Detour detected for Vehicle " + vehicleId);
+			for (List<VehiclePosition> vp : detourDetected) {
+				logger.info("Off-route Vehicle Position: " + vp);
 			}
+
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours1Default.xlsx");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
 		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 	@Test
@@ -71,12 +81,20 @@ public class DetourDetectorTesting extends TestCase {
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
+			logger.info("Detour detected for Vehicle " + vehicleId);
 			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
+				logger.info("Off-route Vehicle Position: " + vp);
 			}
+
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours.xlsx");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
 		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 	/*
@@ -89,12 +107,20 @@ public class DetourDetectorTesting extends TestCase {
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
+			logger.info("Detour detected for Vehicle " + vehicleId);
 			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
+				logger.info("Off-route Vehicle Position: " + vp);
 			}
+
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours.xlsx");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
 		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 	@Test
@@ -104,12 +130,20 @@ public class DetourDetectorTesting extends TestCase {
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
+			logger.info("Detour detected for Vehicle " + vehicleId);
 			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
+				logger.info("Off-route Vehicle Position: " + vp);
 			}
+
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours.xlsx");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
 		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 	/*
@@ -124,16 +158,22 @@ public class DetourDetectorTesting extends TestCase {
 		String vehicleId = "2453";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId);
+
 		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> detour : detourDetected) {
-				System.out.println("New detour:");
-				for (VehiclePosition vp : detour) {
-					System.out.println("Off-route Vehicle Position: (" + vp.getPosition_latitude() + ", " + vp.getPosition_longitude() + ")");
-				}
+			logger.info("Detour detected for Vehicle " + vehicleId);
+			for (List<VehiclePosition> vp : detourDetected) {
+				logger.info("Off-route Vehicle Position: " + vp);
 			}
+
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours.xlsx");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
 		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 	/*
@@ -151,6 +191,13 @@ public class DetourDetectorTesting extends TestCase {
 			for (List<VehiclePosition> vp : detourDetected) {
 				System.out.println("Off-route Vehicle Position: " + vp);
 			}
+			// Exporting the results to an Excel file
+			try {
+				((DetourDetectorDefaultImpl) detourDetector).exportDetoursToExcel(detourDetected, "Detours.xlsx");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 		} else {
 			System.out.println("No detour detected for Vehicle " + vehicleId);
 		}
