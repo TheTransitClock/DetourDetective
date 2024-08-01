@@ -3,6 +3,7 @@ import jakarta.persistence.Entity;
 
 import jakarta.persistence.Id;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 @Entity(name = "vehicle_positions")
@@ -21,15 +22,15 @@ public class VehiclePosition {
     private Double position_speed;
     private String occupancy_status;
 
-    private LocalDate timestamp;
+    private Date timestamp;
 
-    private LocalDate trip_start_date;
+    private Date trip_start_date;
 
     public VehiclePosition(){
 
     }
 
-    public VehiclePosition(int oid, String trip_id, String route_id, String trip_start_time, String vehicle_id, String vehicle_label, String vehicle_license_plate, Double position_latitude, Double position_longitude, Double position_bearing, Double position_speed, String occupancy_status, LocalDate timestamp, LocalDate trip_start_date) {
+    public VehiclePosition(int oid, String trip_id, String route_id, String trip_start_time, String vehicle_id, String vehicle_label, String vehicle_license_plate, Double position_latitude, Double position_longitude, Double position_bearing, Double position_speed, String occupancy_status, Date timestamp, Date trip_start_date) {
         this.oid = oid;
         this.trip_id = trip_id;
         this.route_id = route_id;
@@ -148,19 +149,19 @@ public class VehiclePosition {
         this.occupancy_status = occupancy_status;
     }
 
-    public LocalDate getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDate timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
-    public LocalDate getTrip_start_date() {
+    public Date getTrip_start_date() {
         return trip_start_date;
     }
 
-    public void setTrip_start_date(LocalDate trip_start_date) {
+    public void setTrip_start_date(Date trip_start_date) {
         this.trip_start_date = trip_start_date;
     }
 

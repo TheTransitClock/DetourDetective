@@ -28,9 +28,9 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final GeometryFactory gf = new GeometryFactory();
 
-	private static final double threshold = 100;
+	private static final double threshold = 400;
 
-	private static final double onRouteThreshold = 2;
+	private static final double onRouteThreshold = 3;
 
 	private static final double countThreshold = 10;
 
@@ -51,7 +51,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		int consecutiveOffRouteCount = 0;
 		int consecutiveOnRouteCount = 0;
 
-
+		int position_counter=0;
 		List<List<VehiclePosition>> detours = new ArrayList<>();
 		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<>();
 		List<VehiclePosition> offRoutePoints = new ArrayList<>();
@@ -66,32 +66,41 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				double distance = this.getDistance(vehiclePoint, polyline);
 				double squaredDistance = distance * distance;
 
-				logger.info("The distance is " + distance);
+				logger.debug("The distance is " + distance);
 
-				logger.info(vehicleCoordinates.getX());
-				logger.info(vehicleCoordinates.getY());
-
+				logger.info("Vehicle position :"+position_counter+ "," + vehicleCoordinates.getX()+","+vehicleCoordinates.getY());
+				
+				position_counter++;
+								
 				// Check if the squared distance exceeds the threshold
 				if (squaredDistance > threshold) {
-					logger.info("The squared distance is " + squaredDistance);
+															
+					logger.debug("The squared distance is " + squaredDistance+ " which is greater than treshold.");
 					consecutiveOffRouteCount++;
 					consecutiveOnRouteCount = 0;
 
 					potentialOffRoutePoints.add(vehiclePosition);
 
-					if (consecutiveOffRouteCount > countThreshold) {
+					if (consecutiveOffRouteCount > countThreshold && detourDetected==false) 
+					{
+						logger.info("Start of detour detected.");
+						offRoutePoints.addAll(potentialOffRoutePoints);						
 						detourDetected = true;
 					}
-					if (detourDetected) {
-						offRoutePoints.addAll(potentialOffRoutePoints);
+					if (detourDetected) 
+					{						
 						potentialOffRoutePoints.clear();
 						offRoutePoints.add(vehiclePosition);
 					}
-				} else {
+				} else  {
+					
+					logger.debug("Number of points off route is : "+consecutiveOffRouteCount);
+					
+					logger.debug("The squared distance is " + squaredDistance + " which is lower than treshold.");
 					consecutiveOnRouteCount++;
 					consecutiveOffRouteCount = 0;
 
-					if (consecutiveOnRouteCount > onRouteThreshold && detourDetected) {
+					if (consecutiveOnRouteCount > onRouteThreshold && detourDetected == true) {
 						// Detour ends
 						logger.info("End of detour detected.");
 						detourDetected = false;
@@ -179,7 +188,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				// Add more cells if VehiclePosition has more attributes
 
 				// Debugging output
-				System.out.println("Added VehiclePosition to row: " + rowCount);
+				logger.info("Added VehiclePosition " +vp + " to row: " + rowCount );
 			}
 		}
 

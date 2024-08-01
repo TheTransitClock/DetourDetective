@@ -10,7 +10,7 @@ import java.util.List;
 import sbahr.DiscreteFrechetDistance;
 public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl implements DetourDetector{
 	private static Logger logger = Logger.getLogger(DetourDetectorDiscreteFrechet.class);
-	private static final double DETOURTRESHOLD = 100;
+	private static final double DETOURTRESHOLD = 50;
 	private static final int R=6371*1000;
 	private static final double countThreshold = 10;
 

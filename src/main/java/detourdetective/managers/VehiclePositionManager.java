@@ -31,8 +31,10 @@ public class VehiclePositionManager {
             Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
             Predicate vehicleIdPredicate = cb.like(root.get("vehicle_id"), vehicleId);
             Predicate combinedPredicate = cb.and(tripIdPredicate, vehicleIdPredicate);
+            
 
             cr.select(root).where(combinedPredicate);
+            cr.orderBy(cb.asc(root.get("timestamp")));
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
