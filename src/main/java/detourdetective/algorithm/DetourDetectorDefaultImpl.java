@@ -175,33 +175,5 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		return dist;
 	}
 
-	public void exportDetoursToExcel(List<List<VehiclePosition>> detours, String fileName) throws IOException {
-		Workbook workbook = new XSSFWorkbook();
-		Sheet sheet = workbook.createSheet("Detours");
-
-		int rowCount = 0;
-		for (List<VehiclePosition> detour : detours) {
-			for (VehiclePosition vp : detour) {
-				Row row = sheet.createRow(rowCount++);
-				createCell(row, 0, vp.getPosition_longitude());
-				createCell(row, 1, vp.getPosition_latitude());
-				// Add more cells if VehiclePosition has more attributes
-
-				// Debugging output
-				logger.info("Added VehiclePosition " +vp + " to row: " + rowCount );
-			}
-		}
-
-		try (FileOutputStream outputStream = new FileOutputStream(fileName)) {
-			workbook.write(outputStream);
-		} finally {
-			workbook.close();
-		}
-	}
-
-	private void createCell(Row row, int column, double value) {
-		Cell cell = row.createCell(column);
-		cell.setCellValue(value);
-	}
 
 }
