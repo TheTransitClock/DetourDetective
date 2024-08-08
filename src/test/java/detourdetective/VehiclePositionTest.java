@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class VehiclePositionTest extends TestCase {
     @Test
@@ -25,6 +26,13 @@ public class VehiclePositionTest extends TestCase {
         List<VehiclePosition> trips = VehiclePositionManager.readtripVehiclePosition("JG_A4-Weekday-SDon-084600_B16_414","766");
         for (VehiclePosition position : trips) {
             System.out.println(position);
+        }
+    }
+    @Test
+    public void test_getTripAndVehicleId(){
+        Set<String> tripAndVehcileId = VehiclePositionManager.getTripIdForARoute("B16");
+        for (String ids : tripAndVehcileId) {
+            System.out.println(ids);
         }
     }
     

@@ -3,18 +3,15 @@ package detourdetective.managers;
 import detourdetective.HibernateUtil;
 import detourdetective.entities.Shape;
 import detourdetective.entities.Trip;
-import detourdetective.entities.VehiclePosition;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import java.time.LocalDate;
 import java.util.*;
 
 public class TripManager {

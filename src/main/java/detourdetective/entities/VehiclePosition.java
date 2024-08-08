@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity(name = "vehicle_positions")
 public class VehiclePosition {
@@ -163,6 +164,18 @@ public class VehiclePosition {
 
     public void setTrip_start_date(Date trip_start_date) {
         this.trip_start_date = trip_start_date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VehiclePosition that)) return false;
+        return Objects.equals(trip_id, that.trip_id) && Objects.equals(vehicle_id, that.vehicle_id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(trip_id, vehicle_id);
     }
 
     @Override

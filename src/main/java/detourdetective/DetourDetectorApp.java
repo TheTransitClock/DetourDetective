@@ -2,13 +2,15 @@ package detourdetective;
 
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Set;
 
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorDefaultImpl;
-import detourdetective.entities.ExportToExcel;
+import detourdetective.entities.ExportToCSV;
 import detourdetective.entities.VehiclePosition;
+import detourdetective.managers.VehiclePositionManager;
 import org.apache.commons.cli.*;
 
 public class DetourDetectorApp {
@@ -28,10 +30,53 @@ public class DetourDetectorApp {
 				CommandLine cmd = parser.parse(options, args);
 
 				if (cmd.hasOption("R")) {
-					System.out.println("Route: " + cmd.getOptionValue("R"));
+					String routeId = cmd.getOptionValue("R");
+
+					// Get trip and vehicle IDs for the route
+					Set<String> tripAndVehicleIds = VehiclePositionManager.getTripIdForARoute(routeId);
+					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
+						System.out.println("No trip and vehicle IDs found for route " + routeId);
+						return;
+					}
+
+					// Initialize DetourDetector
+					DetourDetector detourDetector = new DetourDetectorDefaultImpl();
+
+					// Iterate over each trip and vehicle ID pair
+					for (String tripAndVehicleId : tripAndVehicleIds) {
+						String[] ids = tripAndVehicleId.split("--:");
+						if (ids.length != 2) {
+							System.out.println("Invalid format for trip and vehicle ID: " + tripAndVehicleId);
+							continue;
+						}
+						String tripId = ids[0];
+						String vehicleId = ids[1];
+
+						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId,vehicleId);
+						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
+							System.out.println("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+							continue;
+						}
+
+						Date tripDate = vehiclePositions.get(0).getTrip_start_date();
+
+						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId);
+
+						// Create a unique filename for each result
+						String filename = String.format("%s_%s_%s_%s.CSV",tripDate,cmd.getOptionValue('R'),tripId, vehicleId);
+
+						// Export the detected detours to an Excel file
+						if (detours != null && !detours.isEmpty()) {
+							ExportToCSV.exportDetoursToCSV(detours, filename);
+							System.out.println("Detours exported to " + filename);
+						} else {
+							System.out.println("No detour detected for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+						}
+					}
 				} else {
 					System.out.println("Route not provided.");
 				}
+
 
 				if (cmd.hasOption("D")) {
 					System.out.println("Date: " + cmd.getOptionValue("D"));
@@ -63,7 +108,8 @@ public class DetourDetectorApp {
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
-							ExportToExcel.exportDetoursToExcel(detours, cmd.getOptionValue("F"));
+							ExportToCSV.exportDetoursToCSV
+									(detours, cmd.getOptionValue("F"));
 							System.out.println("Detours exported to " + cmd.getOptionValue("F"));
 						} else {
 							System.out.println("No detour detected for Vehicle " + cmd.getOptionValue("V"));
@@ -72,7 +118,7 @@ public class DetourDetectorApp {
 						System.out.println("IOException occurred: " + e.getMessage());
 					}
 				}
-			} catch (ParseException e) {
+			} catch (ParseException | IOException e) {
 				System.out.println("Unexpected exception: " + e.getMessage());
 			}
 		}

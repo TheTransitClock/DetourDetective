@@ -1,6 +1,6 @@
 package detourdetective.algorithm;
 
-import detourdetective.entities.ExportToExcel;
+import detourdetective.entities.ExportToCSV;
 import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
@@ -36,7 +36,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours1Default.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours1Default.xlsx");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -61,7 +61,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -87,7 +87,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -110,7 +110,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -140,7 +140,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -166,7 +166,7 @@ public class DetourDetectorTesting extends TestCase {
 			}
 			// Exporting the results to an Excel file
 			try {
-				ExportToExcel.exportDetoursToExcel(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -89,6 +89,7 @@ public class VehiclePositionManager {
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
+            cr.orderBy(cb.asc(root.get("timestamp")));
 
             Set<TripVehicle> tripSet = new HashSet<>();
 
@@ -98,6 +99,34 @@ public class VehiclePositionManager {
     		}
     		return tripSet;
 
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static Set<String> getTripIdForARoute(String routeId) {
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
+            Root<VehiclePosition> root = cr.from(VehiclePosition.class);
+            cr.select(root).where(cb.like(root.get("route_id"), routeId));
+
+            Query<VehiclePosition> query = session.createQuery(cr);
+            List<VehiclePosition> results = query.getResultList();
+
+            // Prepare the set to hold unique trip and vehicle IDs
+            Set<String> tripandvehicleId = new HashSet<>();
+
+            // Iterate over the results and add the IDs to the set
+            for (VehiclePosition vehiclePosition : results) {
+                String tripId = vehiclePosition.getTrip_id();
+                String vehicleId= vehiclePosition.getVehicle_id();
+                tripandvehicleId.add(tripId+ "--:" + vehicleId);
+            }
+            return tripandvehicleId;
         } catch (Exception e) {
 
             e.printStackTrace();
