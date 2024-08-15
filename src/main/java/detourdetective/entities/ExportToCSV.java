@@ -23,7 +23,7 @@ public class ExportToCSV {
                     writer.printf("%f,%f,%d\n", vp.getPosition_longitude(), vp.getPosition_latitude(), vp.getTimestamp().getTime());
 
                     // Debugging output
-                    logger.info("Added VehiclePosition " + vp + " to row: " + (rowCount + 1));
+                    logger.debug("Added VehiclePosition " + vp + " to row: " + (rowCount + 1));
                     rowCount++;
                 }
             }

@@ -68,7 +68,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 				logger.debug("The distance is " + distance);
 
-				logger.info("Vehicle position :"+position_counter+ "," + vehicleCoordinates.getX()+","+vehicleCoordinates.getY());
+				logger.info("Vehicle position :"+position_counter+ "," + vehicleCoordinates.getX()+","+vehicleCoordinates.getY()+", Timestamp:"+ vehiclePosition.getTimestamp().getTime());
 				
 				position_counter++;
 								
