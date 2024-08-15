@@ -21,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class DetourDetectorDefaultImpl implements DetourDetector {
 
@@ -43,7 +44,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 			Point jtsPoint = tripShape.get(i);
 			polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
 		}
-
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
+		
 		// Create a polyline from the coordinates
 		LineString polyline = gf.createLineString(polylineCoordinates);
 
@@ -68,7 +70,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 				logger.debug("The distance is " + distance);
 
-				logger.info("Vehicle position :"+position_counter+ "," + vehicleCoordinates.getX()+","+vehicleCoordinates.getY()+", Timestamp:"+ vehiclePosition.getTimestamp().getTime());
+				logger.info("Vehicle position :"+position_counter+ "," + vehicleCoordinates.getX()+","+vehicleCoordinates.getY()+", Timestamp:"+ formatter.format( vehiclePosition.getTimestamp()));
 				
 				position_counter++;
 								

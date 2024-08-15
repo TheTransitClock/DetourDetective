@@ -21,11 +21,9 @@ import java.util.stream.Collectors;
 
 public class VehiclePositionManager {
     public static List<VehiclePosition> readtripVehiclePosition(String tripId, String vehicleId) {
-        Transaction transaction = null;
+        
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // start a transaction
-            transaction = session.beginTransaction();
-
+           
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
             Root<VehiclePosition> root = cr.from(VehiclePosition.class);
@@ -41,14 +39,10 @@ public class VehiclePositionManager {
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
-
-            // commit transaction
-            transaction.commit();
+           
             return results;
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+           
             e.printStackTrace();
             return null;
         }
