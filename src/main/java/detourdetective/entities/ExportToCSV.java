@@ -15,12 +15,12 @@ public class ExportToCSV {
     public static void exportDetoursToCSV(List<List<VehiclePosition>> detours, String fileName) throws IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             // Optional: Write header row
-            writer.println("Longitude,Latitude");
+            writer.println("Longitude,Latitude,Timestamp");
 
             int rowCount = 0;
             for (List<VehiclePosition> detour : detours) {
                 for (VehiclePosition vp : detour) {
-                    writer.printf("%f,%f%n", vp.getPosition_longitude(), vp.getPosition_latitude());
+                    writer.printf("%f,%f,%d\n", vp.getPosition_longitude(), vp.getPosition_latitude(), vp.getTimestamp().getTime());
 
                     // Debugging output
                     logger.info("Added VehiclePosition " + vp + " to row: " + (rowCount + 1));

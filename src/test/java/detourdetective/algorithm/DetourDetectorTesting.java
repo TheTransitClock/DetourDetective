@@ -36,7 +36,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours1Default.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours1Default.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -140,7 +140,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -166,7 +166,7 @@ public class DetourDetectorTesting extends TestCase {
 			}
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.CSV");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
