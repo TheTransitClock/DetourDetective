@@ -34,7 +34,7 @@ public class DetourDetectorApp {
 					String routeId = cmd.getOptionValue("R");
 
 					// Get trip and vehicle IDs for the route
-					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdForARoute(routeId);
+					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
 						System.out.println("No trip and vehicle IDs found for route " + routeId);
 						return;

@@ -31,7 +31,7 @@ public class VehiclePositionTest extends TestCase {
     }
     @Test
     public void test_getTripAndVehicleId(){
-        List<TripVehicle> tripAndVehcileId = VehiclePositionManager.getTripIdForARoute("B16");
+        List<TripVehicle> tripAndVehcileId = VehiclePositionManager.getTripIdAndVehicleIdForARoute("B16");
         for (TripVehicle ids : tripAndVehcileId) {
             System.out.println(ids);
         }
