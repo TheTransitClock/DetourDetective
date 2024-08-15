@@ -1,6 +1,7 @@
 package detourdetective;
 
 import detourdetective.entities.Shape;
+import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
 import detourdetective.managers.VehiclePositionManager;
@@ -30,8 +31,8 @@ public class VehiclePositionTest extends TestCase {
     }
     @Test
     public void test_getTripAndVehicleId(){
-        Set<String> tripAndVehcileId = VehiclePositionManager.getTripIdForARoute("B16");
-        for (String ids : tripAndVehcileId) {
+        List<TripVehicle> tripAndVehcileId = VehiclePositionManager.getTripIdForARoute("B16");
+        for (TripVehicle ids : tripAndVehcileId) {
             System.out.println(ids);
         }
     }

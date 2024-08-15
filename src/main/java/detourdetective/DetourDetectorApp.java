@@ -9,6 +9,7 @@ import java.util.Set;
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorDefaultImpl;
 import detourdetective.entities.ExportToCSV;
+import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.VehiclePositionManager;
 import org.apache.commons.cli.*;
@@ -33,7 +34,7 @@ public class DetourDetectorApp {
 					String routeId = cmd.getOptionValue("R");
 
 					// Get trip and vehicle IDs for the route
-					Set<String> tripAndVehicleIds = VehiclePositionManager.getTripIdForARoute(routeId);
+					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
 						System.out.println("No trip and vehicle IDs found for route " + routeId);
 						return;
@@ -43,14 +44,10 @@ public class DetourDetectorApp {
 					DetourDetector detourDetector = new DetourDetectorDefaultImpl();
 
 					// Iterate over each trip and vehicle ID pair
-					for (String tripAndVehicleId : tripAndVehicleIds) {
-						String[] ids = tripAndVehicleId.split("--:");
-						if (ids.length != 2) {
-							System.out.println("Invalid format for trip and vehicle ID: " + tripAndVehicleId);
-							continue;
-						}
-						String tripId = ids[0];
-						String vehicleId = ids[1];
+					for (TripVehicle tripAndVehicleId : tripAndVehicleIds) {
+
+						String tripId =  tripAndVehicleId.getTripId();
+						String vehicleId = tripAndVehicleId.getVehicleId();
 
 						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId,vehicleId);
 						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
