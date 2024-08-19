@@ -13,17 +13,14 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class VehiclePositionManager {
     public static List<VehiclePosition> readtripVehiclePosition(String tripId, String vehicleId) {
-        
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-           
+
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
             Root<VehiclePosition> root = cr.from(VehiclePosition.class);
@@ -39,10 +36,38 @@ public class VehiclePositionManager {
 
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
-           
+
             return results;
         } catch (Exception e) {
-           
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static List<VehiclePosition> readtripVehiclePositionWithDate(String tripId, String vehicleId, Date date) {
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
+            Root<VehiclePosition> root = cr.from(VehiclePosition.class);
+
+            // Constructing the query predicate
+            Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
+            Predicate vehicleIdPredicate = cb.like(root.get("vehicle_id"), vehicleId);
+            Predicate tripDatePredicate = cb.equal(root.get("trip_start_date"),date);
+            Predicate combinedPredicate = cb.and(tripIdPredicate, vehicleIdPredicate, tripDatePredicate);
+
+
+            cr.select(root).where(combinedPredicate);
+            cr.orderBy(cb.asc(root.get("timestamp")));
+
+            Query<VehiclePosition> query = session.createQuery(cr);
+            List<VehiclePosition> results = query.getResultList();
+
+            return results;
+        } catch (Exception e) {
+
             e.printStackTrace();
             return null;
         }

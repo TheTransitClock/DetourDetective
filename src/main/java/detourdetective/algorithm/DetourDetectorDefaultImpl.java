@@ -6,6 +6,7 @@ import detourdetective.managers.VehiclePositionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -29,15 +30,15 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final GeometryFactory gf = new GeometryFactory();
 
-	private static final double threshold = 400;
+	private double distanceSquared = 400;
 
-	private static final double onRouteThreshold = 3;
+	private double onRouteThreshold = 3;
 
-	private static final double countThreshold = 10;
+	private double offRouteThreshold = 10;
 
 	private static boolean detourDetected = false;
 
-	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints, int distanceSquared,int onRouteThreshold, int countThreshold) {
 		// Convert JTS Points to Coordinates
 		Coordinate[] polylineCoordinates = new Coordinate[tripShape.size()];
 		for (int i = 0; i < tripShape.size(); i++) {
@@ -75,7 +76,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				position_counter++;
 								
 				// Check if the squared distance exceeds the threshold
-				if (squaredDistance > threshold) {
+				if (squaredDistance > distanceSquared) {
 															
 					logger.debug("The squared distance is " + squaredDistance+ " which is greater than treshold.");
 					consecutiveOffRouteCount++;
@@ -119,7 +120,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		}
 
 		// If detour is still ongoing at the end of the points, add it to the list
-		if (detourDetected && !offRoutePoints.isEmpty()) {
+		if (!offRoutePoints.isEmpty()) {
 			detours.add(new ArrayList<>(offRoutePoints));
 		}
 
@@ -143,15 +144,38 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId)  {
+	public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId, Date date)  {
 
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
-		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePosition(tripId, vehicleId);
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId, vehicleId, date);
 
 	 return detectDetours(tripShape, vehiclePositions);
+	}
+
+	@Override
+	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, int distance, int onCountThreshold, int offCountThreshold) {
+		// Get the list of JTS Points from the TripManager for the polyline
+		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
+
+		// Fetch vehicle positions
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId, vehicleId, date);
+
+
+
+		this.distanceSquared = distance*distance;
+		this.onRouteThreshold=onCountThreshold;
+		this.offRouteThreshold=offCountThreshold;
+
+
+		return detectDetours(tripShape, vehiclePositions);
+	}
+
+	@Override
+	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+		return detectDetours(tripShape, avlPoints, (int) distanceSquared, (int) onRouteThreshold, (int) offRouteThreshold);
 	}
 
 	public double getDistance(Point point, LineString line) {

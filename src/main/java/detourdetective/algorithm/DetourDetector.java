@@ -19,6 +19,7 @@ package detourdetective.algorithm;
 
 
 
+import java.util.Date;
 import java.util.List;
 
 import detourdetective.entities.VehiclePosition;
@@ -43,7 +44,10 @@ public interface DetourDetector {
      * @return true if a detour is detected, false otherwise
      * @throws ParseException if there is an error parsing the trip or vehicle data
      */
-    public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId);
+
+    public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId, Date date);
+
+    public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId, Date date,int distanceSquared, int onCountThreshold, int offCountThreshold);
 
     List<List<VehiclePosition>>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
 

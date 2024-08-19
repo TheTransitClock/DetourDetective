@@ -15,6 +15,7 @@ public class ExportToCSV {
     private static Logger logger = Logger.getLogger(ExportToCSV.class);
 
     public static void exportDetoursToCSV(List<List<VehiclePosition>> detours, String fileName) throws IOException {
+        logger.info("File:" +fileName);
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             // Optional: Write header row
             writer.println("Longitude,Latitude,Timestamp");
@@ -29,7 +30,7 @@ public class ExportToCSV {
             for (List<VehiclePosition> detour : detours) {
                 for (VehiclePosition vp : detour) {
                     writer.printf("%f,%f,%s\n", vp.getPosition_longitude(), vp.getPosition_latitude(), formatter.format( vp.getTimestamp()));
-                    
+
                    
                     // Debugging output
                     logger.debug("Added VehiclePosition " + vp + " to row: " + (rowCount + 1));
