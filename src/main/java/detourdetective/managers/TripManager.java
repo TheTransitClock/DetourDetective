@@ -51,6 +51,7 @@ public class TripManager {
             CriteriaQuery<Shape> cr = cb.createQuery(Shape.class);
             Root<Shape> root = cr.from(Shape.class);
             cr.select(root).where(cb.equal(root.get("shape_id"), shape_id));
+			cr.orderBy(cb.asc(root.get("shape_pt_sequence")));
 
             Query<Shape> query = session.createQuery(cr);
             List<Shape> results = query.getResultList();
