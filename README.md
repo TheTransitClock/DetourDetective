@@ -13,7 +13,7 @@ To run the tool, you will need to provide several options. Below is a descriptio
 
 | Option        | Short Option | Required | Description |
 |---------------|--------------|----------|-------------|
-| `--route`     | `-R`         | Yes      | The route you want to check. This option specifies the route ID to analyze. |
+| `--route`     | `-R`         | No      | The route you want to check. This option specifies the route ID to analyze. |
 | `--date`      | `-D`         | Yes      | The date you want to check the route on. The date should be provided in the format `yyyyMMdd`. |
 | `--tripId`    | `-T`         | Yes      | The trip ID you want to analyze. This is the specific trip on the route to check for detours. |
 | `--vehicleId` | `-V`         | Yes      | The vehicle ID associated with the trip you are analyzing. This is the identifier for the vehicle whose GPS data will be checked for detours. |
