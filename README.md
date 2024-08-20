@@ -3,10 +3,6 @@ Detect detours on public transit systems.
 
 Here is a guide on how to use the command-line options provided:
 
----
-
-# Detour Detection Tool
-
 This tool is designed to detect vehicle detours on a given route using GPS data. It analyzes the positions of vehicles against the expected route shape and detects when a vehicle deviates from its planned route. The results are then saved to a CSV file.
 
 ## Command-Line Options
