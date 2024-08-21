@@ -14,7 +14,7 @@ To run the tool, you will need to provide several options. Below is a descriptio
 | Option        | Short Option | Required | Description |
 |---------------|--------------|----------|-------------|
 | `--route`     | `-R`         | No      | The route you want to check. This option specifies the route ID to analyze. |
-| `--date`      | `-D`         | Yes      | The date you want to check the route on. The date should be provided in the format `yyyyMMdd`. |
+| `--date`      | `-D`         | Yes      | The date you want to check the route on. The date and time should be provided in the format `yyyyMMddHH:mm:ss`. |
 | `--tripId`    | `-T`         | Yes      | The trip ID you want to analyze. This is the specific trip on the route to check for detours. |
 | `--vehicleId` | `-V`         | Yes      | The vehicle ID associated with the trip you are analyzing. This is the identifier for the vehicle whose GPS data will be checked for detours. |
 | `--Filename`  | `-F`         | Yes      | The filename where the output CSV will be stored. This is the name of the file that will contain the detected detour information. |
@@ -29,7 +29,7 @@ Below is an example command to run the tool:
 
 ```bash
   -R 1234 \
-  -D 2024-08-15 \
+  -D 2024081523:00:00 \
   -T UP_A4-Weekday-SDon-036100_X2737_704 \
   -V 5678 \
   -F detours_output.csv \
@@ -42,7 +42,7 @@ Below is an example command to run the tool:
 In this example:
 
 - `-R 1234` specifies the route ID.
-- `-D 20240815` specifies the date of the trip.
+- `-D 2024081523:00:00` specifies the date and time of the trip.
 - `-T UP_A4-Weekday-SDon-036100_X2737_704` specifies the trip ID.
 - `-V 5678` specifies the vehicle ID.
 - `-F detours_output.csv` sets the output filename to `detours_output.csv`.
@@ -54,7 +54,7 @@ In this example:
 ### Example 2
 
 ```bash
-  -D 2024-08-15 \
+  -D 2024081523:00:00 \
   -T JG_A4-Weekday-SDon-084600_B16_414 \
   -V 766 \
   -F detours_output.csv \
@@ -62,7 +62,7 @@ In this example:
 ```
 In this example:
 
-- `-D 20240326` specifies the date of the trip.
+- `-D 2024032623:00:00` specifies the date and time of the trip.
 - `-T JG_A4-Weekday-SDon-084600_B16_414` specifies the trip ID.
 - `-V 766` specifies the vehicle ID.
 - `-F detours_output.csv` sets the output filename to `detours_output.csv`.
@@ -74,7 +74,25 @@ Output
 
 Green points represent the shape of the trip. The yellow points are the detoured points we were given in our CSV file when we run the detour detector.
 
+### Example 3
 
+- This example will test all the trips on the route and date provided. Each detour will be returned in it's own CSV file.
+
+```bash
+  -R B43
+  -D 2024032623:00:00 \
+  -L /home/user/detours/ \
+```
+
+In this example:
+
+- '-R B43' specifies the route.
+- '-D 2024032623:00:00' specifies the date and time.
+- `-L /home/user/detours/` specifies the directory where the CSV file will be saved.
+
+![image](https://github.com/user-attachments/assets/7085edd2-ddc3-4275-9736-3d5ac2651aac)
+
+The file name is made up of the date, route id , trip id and the vehicle id.
 
 ### Notes
 
