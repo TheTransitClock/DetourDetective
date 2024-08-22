@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -109,7 +110,7 @@ public class TripManager {
 		
 	}
 
-	public static LocalDateTime tripStartTime(String tripId) {
+	public static LocalTime tripStartTime(String tripId) {
 
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
@@ -132,12 +133,12 @@ public class TripManager {
 				Tuple tuple = results.get(0);
 				String arrivalTime = tuple.get("arrival_time", String.class);
 				
-				String format = "hh:mm:ss";
+				String format = "HH:mm:ss";
 								
 				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
 								
-				LocalDateTime dateTime = LocalDateTime.parse(arrivalTime, timeFormatter);
-
+				LocalTime dateTime = LocalTime.parse(arrivalTime, timeFormatter);
+				
 				return dateTime;
 			}
 		}

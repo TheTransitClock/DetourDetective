@@ -65,14 +65,14 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
 
-            LocalDateTime firstStopTime = TripManager.tripStartTime(tripId);
+            LocalTime firstStopTime = TripManager.tripStartTime(tripId);
                       
             List<VehiclePosition> filteredVehiclePositions = new ArrayList<>();
             
             for (VehiclePosition vp : results) 
             {                            	      
             	if(VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp())>
-            	VehiclePositionManager.secondsFromMidnightLocalDateTime(firstStopTime))
+            	VehiclePositionManager.secondsFromMidnightLocalTime(firstStopTime))
             	{
             		filteredVehiclePositions.add(vp);
             	}
@@ -84,7 +84,7 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    public static int secondsFromMidnightLocalDateTime(LocalDateTime timestamp)
+    public static int secondsFromMidnightLocalTime(LocalTime timestamp)
     {
 		return (timestamp.getHour()*60*60)+(timestamp.getMinute()*60);    	    
     }
