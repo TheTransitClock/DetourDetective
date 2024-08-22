@@ -139,16 +139,14 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 						}
 						detours.add(offRoutePoints);
 					}
-
-					offRoutePoints.clear();
-					potentialOffRoutePoints.clear();
+					offRoutePoints=new ArrayList<>();
+					potentialOffRoutePoints=new ArrayList<>();
 				}
 
 				logger.info("Number of points off route is : " + consecutiveOffRouteCount);
 				logger.info("Number of points on route is : " + consecutiveOnRouteCount);
 				logger.info("Distance : " + distance);
 				logger.info("DetourDetected : " + detourDetected);
-
 			}
 		}
 
