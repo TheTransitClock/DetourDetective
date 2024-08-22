@@ -14,6 +14,11 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TripManager {
@@ -104,7 +109,7 @@ public class TripManager {
 		
 	}
 
-	public static StopTimes tripStartTime(String tripId) {
+	public static LocalDateTime tripStartTime(String tripId) {
 
 		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
@@ -120,25 +125,30 @@ public class TripManager {
 					cb.equal(stopTimesRoot.get("trip_id"), tripId)
 			);
 
-
-
 			Query<Tuple> query = session.createQuery(cr);
 			List<Tuple> results = query.getResultList();
 
 			if(results.size() == 1){
 				Tuple tuple = results.get(0);
 				String arrivalTime = tuple.get("arrival_time", String.class);
-				StopTimes stopTimes = new StopTimes();
-				stopTimes.setArrival_time(arrivalTime);
+				
+				String format = "hh:mm:ss";
+								
+				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
+								
+				LocalDateTime dateTime = LocalDateTime.parse(arrivalTime, timeFormatter);
 
-				return stopTimes;
-
+				return dateTime;
 			}
 		}
 		return null;
 	}
 	
-
+	   public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+	        return dateToConvert.toInstant()
+	          .atZone(ZoneId.systemDefault())
+	          .toLocalDate();
+	    }
 
 
 }

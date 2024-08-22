@@ -11,6 +11,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -64,23 +65,35 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
 
-            StopTimes firstStopTime = TripManager.tripStartTime(tripId);
-
-
+            LocalDateTime firstStopTime = TripManager.tripStartTime(tripId);
+                      
             List<VehiclePosition> filteredVehiclePositions = new ArrayList<>();
-            for (VehiclePosition vp : results) {
-                if (vp.getTimestamp().toString().compareTo(firstStopTime.getArrival_time()) >= 0) {
-                    filteredVehiclePositions.add(vp);
-                }
+            
+            for (VehiclePosition vp : results) 
+            {                            	      
+            	if(VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp())>
+            	VehiclePositionManager.secondsFromMidnightLocalDateTime(firstStopTime))
+            	{
+            		filteredVehiclePositions.add(vp);
+            	}
             }
-
-
             return filteredVehiclePositions;
         } catch (Exception e) {
 
             e.printStackTrace();
             return null;
         }
+    }
+    public static int secondsFromMidnightLocalDateTime(LocalDateTime timestamp)
+    {
+		return (timestamp.getHour()*60*60)+(timestamp.getMinute()*60);    	    
+    }
+    
+    @SuppressWarnings("deprecation")
+	public static int secondsFromMidnightTimestamp(Timestamp timestamp)
+    {
+    	return (timestamp.getHours()*60*60)+(timestamp.getMinutes()*60);
+    	
     }
 
     public static LocalTime secondsFromMidnight(Timestamp time){
