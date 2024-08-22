@@ -1,14 +1,11 @@
 package detourdetective.entities;
-import jakarta.persistence.Entity;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Objects;
+
 
 @Entity(name = "vehicle_positions")
 public class VehiclePosition {
@@ -29,13 +26,13 @@ public class VehiclePosition {
     
     private Timestamp timestamp;
 
-    private Date trip_start_date;
+    private Timestamp trip_start_date;
 
     public VehiclePosition(){
 
     }
 
-    public VehiclePosition(int oid, String trip_id, String route_id, String trip_start_time, String vehicle_id, String vehicle_label, String vehicle_license_plate, Double position_latitude, Double position_longitude, Double position_bearing, Double position_speed, String occupancy_status, Timestamp timestamp, Date trip_start_date) {
+    public VehiclePosition(int oid, String trip_id, String route_id, String trip_start_time, String vehicle_id, String vehicle_label, String vehicle_license_plate, Double position_latitude, Double position_longitude, Double position_bearing, Double position_speed, String occupancy_status, Timestamp timestamp, Timestamp trip_start_date) {
         this.oid = oid;
         this.trip_id = trip_id;
         this.route_id = route_id;
@@ -162,11 +159,11 @@ public class VehiclePosition {
         this.timestamp = timestamp;
     }
 
-    public Date getTrip_start_date() {
+    public Timestamp getTrip_start_date() {
         return trip_start_date;
     }
 
-    public void setTrip_start_date(Date trip_start_date) {
+    public void setTrip_start_date(Timestamp trip_start_date) {
         this.trip_start_date = trip_start_date;
     }
 

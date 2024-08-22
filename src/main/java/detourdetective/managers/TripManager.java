@@ -2,7 +2,9 @@ package detourdetective.managers;
 
 import detourdetective.HibernateUtil;
 import detourdetective.entities.Shape;
+import detourdetective.entities.StopTimes;
 import detourdetective.entities.Trip;
+import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -100,6 +102,40 @@ public class TripManager {
 		
 		return null;
 		
+	}
+
+	public static StopTimes tripStartTime(String tripId) {
+
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+
+			CriteriaQuery<Tuple> cr = cb.createTupleQuery();
+			Root<StopTimes> stopTimesRoot = cr.from(StopTimes.class);
+			cr.multiselect(
+					stopTimesRoot.get("arrival_time").alias("arrival_time")
+			);
+			cr.where(
+					cb.equal(stopTimesRoot.get("stop_sequence"), 1),
+					cb.equal(stopTimesRoot.get("trip_id"), tripId)
+			);
+
+
+
+			Query<Tuple> query = session.createQuery(cr);
+			List<Tuple> results = query.getResultList();
+
+			if(results.size() == 1){
+				Tuple tuple = results.get(0);
+				String arrivalTime = tuple.get("arrival_time", String.class);
+				StopTimes stopTimes = new StopTimes();
+				stopTimes.setArrival_time(arrivalTime);
+
+				return stopTimes;
+
+			}
+		}
+		return null;
 	}
 	
 

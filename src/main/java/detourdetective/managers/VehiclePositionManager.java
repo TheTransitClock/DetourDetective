@@ -1,20 +1,19 @@
 package detourdetective.managers;
 
 import detourdetective.HibernateUtil;
-import detourdetective.entities.Shape;
-import detourdetective.entities.Trip;
-import detourdetective.entities.TripVehicle;
-import detourdetective.entities.VehiclePosition;
+import detourdetective.entities.*;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
-import org.checkerframework.common.value.qual.EnsuresMinLenIf;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class VehiclePositionManager {
     public static List<VehiclePosition> readtripVehiclePosition(String tripId, String vehicleId) {
@@ -65,18 +64,37 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
 
-            return results;
+            StopTimes firstStopTime = TripManager.tripStartTime(tripId);
+
+
+            List<VehiclePosition> filteredVehiclePositions = new ArrayList<>();
+            for (VehiclePosition vp : results) {
+                if (vp.getTimestamp().toString().compareTo(firstStopTime.getArrival_time()) >= 0) {
+                    filteredVehiclePositions.add(vp);
+                }
+            }
+
+
+            return filteredVehiclePositions;
         } catch (Exception e) {
 
             e.printStackTrace();
             return null;
         }
     }
+
+    public static LocalTime secondsFromMidnight(Timestamp time){
+        LocalTime now = LocalTime.now(ZoneId.systemDefault());
+        now.toSecondOfDay();
+
+        return null;
+    }
+
+
+
     public static List<VehiclePosition> getTripVehiclePositionsByDate(String tripId, LocalDate startDate) {
-        Transaction transaction = null;
+
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // start a transaction
-            transaction = session.beginTransaction();
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<VehiclePosition> cr = cb.createQuery(VehiclePosition.class);
@@ -91,13 +109,9 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
             // commit transaction
-            transaction.commit();
             return results;
         } catch (Exception e) {
             e.printStackTrace();
-            if (transaction != null) {
-                transaction.rollback();
-            }
             return null;
         }
     }

@@ -4,21 +4,20 @@ import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
 
+import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.ArrayList;
 
-import java.util.Collections;
 import java.util.Date;
 
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.*;
 import org.locationtech.jts.geom.*;
+
 import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 
@@ -28,11 +27,11 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final GeometryFactory gf = new GeometryFactory();
 
-	private double distanceSquaredThreshold = 10000;
+	private double distanceSquaredThreshold = 400;
 
 	private double onRouteThreshold = 3;
 
-	private double offRouteThreshold = 3;
+	private double offRouteThreshold = 10;
 
 	private static boolean detourDetected = false;
 
@@ -44,7 +43,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 			Point jtsPoint = tripShape.get(i);
 			polylineCoordinates[i] = new Coordinate(jtsPoint.getX(), jtsPoint.getY());
 		}
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy MM dd hh:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhh:mm:ss");
 
 		// Create a polyline from the coordinates
 		LineString polyline = gf.createLineString(polylineCoordinates);
@@ -52,6 +51,11 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		// Track consecutive off-route points
 		int consecutiveOffRouteCount = 0;
 		int consecutiveOnRouteCount = 0;
+
+		Timestamp detourStart = null;
+		Timestamp detourEnd = null;
+		Timestamp savedDetourStart = null;
+		long detourDurationInMillis = 0;
 
 		int position_counter = 0;
 		List<List<VehiclePosition>> detours = new ArrayList<>();
@@ -83,15 +87,21 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				// Check if the squared distance exceeds the threshold
 				if (squaredDistance > distanceSquaredThreshold) {
 
-					logger.debug("The squared distance is " + squaredDistance + " which is greater than treshold.");
+					logger.debug("The squared distance is " + squaredDistance + " which is greater than threshold.");
 
 					consecutiveOffRouteCount++;
 					consecutiveOnRouteCount = 0;
+
+					if(detourStart == null) {
+						detourStart = vehiclePosition.getTimestamp();
+					}
 				}
 
 				if (squaredDistance < distanceSquaredThreshold) {
 					consecutiveOffRouteCount = 0;
 					consecutiveOnRouteCount++;
+					savedDetourStart = detourStart;
+					detourStart = null;
 				}
 
 				if (consecutiveOffRouteCount > 0 && consecutiveOffRouteCount <= countThreshold) {
@@ -102,6 +112,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					logger.info("Start of detour detected.");
 					detourDetected = true;
 					offRoutePoints.addAll(potentialOffRoutePoints);
+					savedDetourStart = detourStart;
 				}
 
 				if (consecutiveOffRouteCount > countThreshold) {
@@ -116,7 +127,13 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (offRoutePoints.size() >= countThreshold) {
 						logger.info("End of detour detected.");
 						detourDetected = false;
-						detours.add(new ArrayList<>(offRoutePoints));
+						detourEnd = vehiclePosition.getTimestamp();
+						if (detourStart != null && detourEnd != null) {
+							Duration detourDuration = Duration.between(detourStart.toInstant(),detourEnd.toInstant());
+							detourDurationInMillis = detourDuration.toMillis();
+							logger.info("Detour Duration in Milliseconds: " + detourDurationInMillis);
+						}
+						detours.add(offRoutePoints);
 					}
 
 					offRoutePoints.clear();
@@ -128,12 +145,6 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				logger.info("Distance : " + distance);
 				logger.info("DetourDetected : " + detourDetected);
 
-				if (vehiclePosition.getPosition_latitude() == 40.604823) {
-					logger.info("Found point to start debugging from");
-					distance = this.getDistance(vehiclePoint, polyline);
-					logger.debug(polyline.toText());
-					logger.info("Found point and the distance is " + distance);
-				}
 			}
 		}
 
@@ -244,24 +255,29 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		}
 		return dist;
 
-		/*
-		 * try { String code = "AUTO:42001," + point.getX() + "," + point.getY();
-		 * CoordinateReferenceSystem auto = CRS.decode(code); // auto =
-		 * CRS.decode("epsg:2470"); MathTransform transform =
-		 * CRS.findMathTransform(DefaultGeographicCRS.WGS84, auto); Geometry g3 =
-		 * JTS.transform(line, transform); Geometry g4 = JTS.transform(point,
-		 * transform);
-		 * 
-		 * Coordinate[] c = DistanceOp.nearestPoints(g4, g3);
-		 * 
-		 * Coordinate c1 = new Coordinate(); //
-		 * System.out.println(c[1].distance(g4.getCoordinate())); JTS.transform(c[1],
-		 * c1, transform.inverse()); //
-		 * System.out.println(geometryFactory.createPoint(c1)); dist =
-		 * JTS.orthodromicDistance(point.getCoordinate(), c1,
-		 * DefaultGeographicCRS.WGS84); } catch (Exception e) { e.printStackTrace(); }
-		 * return dist;
-		 */
+
+
+
+		  /*try { String code = "AUTO:42001," + point.getX() + "," + point.getY();
+		  CoordinateReferenceSystem auto = CRS.decode(code);
+		  // auto = CRS.decode("epsg:2470");
+		  MathTransform transform =
+		  CRS.findMathTransform(DefaultGeographicCRS.WGS84, auto);
+		  Geometry g3 = JTS.transform(line, transform);
+		  Geometry g4 = JTS.transform(point, transform);
+
+		  Coordinate[] c = DistanceOp.nearestPoints(g4, g3);
+
+		  Coordinate c1 = new Coordinate();
+		  //System.out.println(c[1].distance(g4.getCoordinate()));
+			  JTS.transform(c[1], c1, transform.inverse());
+		  //System.out.println(geometryFactory.createPoint(c1)); dist =
+		  JTS.orthodromicDistance(point.getCoordinate(), c1,
+		  DefaultGeographicCRS.WGS84); } catch (Exception e) { e.printStackTrace(); }
+		  return dist;
+
+		   */
+
 	}
 
 }

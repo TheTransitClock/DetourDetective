@@ -13,6 +13,7 @@
         <property name="hibernate.show_sql">true</property>
         <mapping class="detourdetective.entities.VehiclePosition"/>
         <mapping class="detourdetective.entities.Trip"/>
+        <mapping class="detourdetective.entities.StopTimes"/>
         <mapping class="detourdetective.entities.Shape"/>
 
     </session-factory>

@@ -37,7 +37,7 @@ public class DetourDetectorApp {
 
 				if (cmd.hasOption("R") && cmd.hasOption("D") && cmd.hasOption("L")) {
 					String routeId = cmd.getOptionValue("R");
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 					Date date = sdf.parse(cmd.getOptionValue("D"));
 					// Get trip and vehicle IDs for the route
 					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
@@ -138,7 +138,7 @@ public class DetourDetectorApp {
 				if (cmd.hasOption("F")){
 					System.out.println("Filename: " + cmd.getOptionValue("F"));
 				}
-				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F")) {
+				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L")) {
 					try {
 						String dateString = cmd.getOptionValue("R");
 						Date date = new Date(dateString);

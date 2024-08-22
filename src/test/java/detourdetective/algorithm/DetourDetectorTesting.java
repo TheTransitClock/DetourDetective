@@ -24,10 +24,12 @@ public class DetourDetectorTesting extends TestCase {
 	Bus that went on a detour.
 	 */
 	@Test
-	public void testDetourDetectionInPlaceWithDefault() {
+	public void testDetourDetectionInPlaceWithDefault() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
-		Date date = new Date(2024-3-20);
+		String SDate = "2024032623:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
@@ -185,13 +187,87 @@ public class DetourDetectorTesting extends TestCase {
 		}
 	}
 	@Test
-	public void testForDetoursWithGivenDateUsingDefaultAlgorithm(){
-		LocalDate date = LocalDate.of(2024, 3, 27);
+	public void testDetourDetectionInPlaceWithDefault3() throws ParseException {
+		String tripBus766 = "CA_C4-Weekday-SDon-076500_MISC_314";
+		String vehicleId = "8223";
+		String SDate = "2024072200:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		Set<TripVehicle> tripSet = VehiclePositionManager.tripsByDate(date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
 
-		for (TripVehicle vehicle : tripSet) {
-			System.out.println(vehicle);
+		if (detourDetected != null && !detourDetected.isEmpty()) {
+			logger.info("Detour detected for Vehicle " + vehicleId);
+			for (List<VehiclePosition> vp : detourDetected) {
+				logger.info("Off-route Vehicle Position: " + vp);
+			}
+
+			// Exporting the results to an Excel file
+			try {
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
+		} else {
+			logger.info("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	@Test
+	public void testDetourDetectionNotInPlaceWithDefault3() throws ParseException {
+		String tripBus766 = "CA_C4-Sunday-144000_MISC_374";
+		String vehicleId = "8210";
+		String SDate = "2024072100:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+
+		if (detourDetected != null && !detourDetected.isEmpty()) {
+			logger.info("Detour detected for Vehicle " + vehicleId);
+			for (List<VehiclePosition> vp : detourDetected) {
+				logger.info("Off-route Vehicle Position: " + vp);
+			}
+
+			// Exporting the results to an Excel file
+			try {
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
+		} else {
+			logger.info("No detour detected for Vehicle " + vehicleId);
+		}
+	}
+	@Test
+	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTime() throws ParseException {
+		String tripBus766 = "CA_C4-Weekday-SDon-108000_MISC_364";
+		String vehicleId = "8713";
+		String SDate = "2024072200:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
+		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
+
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+
+		if (detourDetected != null && !detourDetected.isEmpty()) {
+			logger.info("Detour detected for Vehicle " + vehicleId);
+			for (List<VehiclePosition> vp : detourDetected) {
+				logger.info("Off-route Vehicle Position: " + vp);
+			}
+
+			// Exporting the results to an Excel file
+			try {
+				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+			} catch (IOException e) {
+				logger.error("Error exporting detours to Excel", e);
+			}
+
+		} else {
+			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
 
