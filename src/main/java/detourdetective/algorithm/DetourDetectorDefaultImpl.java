@@ -31,7 +31,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final GeometryFactory gf = new GeometryFactory();
 
-	private double distanceSquaredThreshold = 400;
+	private double distanceSquaredThreshold = 1000;
 
 	private double onRouteThreshold = 3;
 
@@ -57,9 +57,6 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		int consecutiveOnRouteCount = 0;
 
 		Timestamp detourStart = null;
-		Timestamp detourEnd = null;
-		Timestamp savedDetourStart = null;
-		long detourDurationInMillis = 0;
 
 		boolean detourDetected = false;
 		
@@ -106,7 +103,6 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				if (squaredDistance < distanceSquaredThreshold) {
 					consecutiveOffRouteCount = 0;
 					consecutiveOnRouteCount++;
-					savedDetourStart = detourStart;
 					detourStart = null;
 				}
 
@@ -118,7 +114,6 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					logger.info("Start of detour detected.");
 					detourDetected = true;
 					offRoutePoints.addAll(potentialOffRoutePoints);
-					savedDetourStart = detourStart;
 				}
 
 				if (consecutiveOffRouteCount > countThreshold) {
@@ -134,13 +129,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (offRoutePoints.size() >= countThreshold) {
 						logger.info("End of detour detected.");
 						detourDetected = false;
-						detourEnd = vehiclePosition.getTimestamp();
-						if (detourStart != null && detourEnd != null) {
-							Duration detourDuration = Duration.between(detourStart.toInstant(),detourEnd.toInstant());
-							detourDurationInMillis = detourDuration.toMillis();
-							logger.info("Detour Duration in Milliseconds: " + detourDurationInMillis);
-						}
-						detours.add(offRoutePoints);
+
+						detours.add(offRoutePoints.subList(0,offRoutePoints.size()-onRouteThreshold+1));
 					}
 					offRoutePoints=new ArrayList<>();
 					potentialOffRoutePoints=new ArrayList<>();

@@ -144,6 +144,41 @@ public class TripManager {
 		}
 		return null;
 	}
+	public static LocalTime tripEndTime(String tripId) {
+
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+			CriteriaBuilder cb = session.getCriteriaBuilder();
+
+			CriteriaQuery<Tuple> cr = cb.createTupleQuery();
+			Root<StopTimes> stopTimesRoot = cr.from(StopTimes.class);
+			cr.multiselect(
+					stopTimesRoot.get("arrival_time").alias("arrival_time")
+			);
+			cr.where(
+					cb.equal(stopTimesRoot.get("trip_id"), tripId)
+			);
+			cr.orderBy(cb.desc(stopTimesRoot.get("stop_sequence")));
+
+			Query<Tuple> query = session.createQuery(cr);
+			List<Tuple> results = query.getResultList();
+
+				if (!results.isEmpty()) {
+					Tuple tuple = results.get(0);
+					String arrivalTime = tuple.get("arrival_time", String.class);
+
+					String format = "HH:mm:ss";
+
+					DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
+
+					LocalTime dateTime = LocalTime.parse(arrivalTime, timeFormatter);
+
+					return dateTime;
+			}
+		}
+		return null;
+	}
+
 	
 	   public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
 	        return dateToConvert.toInstant()

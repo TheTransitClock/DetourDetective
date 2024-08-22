@@ -18,7 +18,7 @@ public class ExportToCSV {
         logger.info("File:" +fileName);
         try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
             // Optional: Write header row
-            writer.println("Longitude,Latitude,Timestamp");
+            writer.println("Detour #,Trip Id,Longitude,Latitude,Vehicle Id,Time");
             
             
             
@@ -26,16 +26,17 @@ public class ExportToCSV {
             
             
 
-            int rowCount = 0;
+            int rowCount = 1;
             for (List<VehiclePosition> detour : detours) {
                 for (VehiclePosition vp : detour) {
-                    writer.printf("%f,%f,%s\n", vp.getPosition_longitude(), vp.getPosition_latitude(), formatter.format( vp.getTimestamp()));
+                    writer.printf("%d,%s,%f,%f,%s,%s\n",rowCount,vp.getTrip_id(), vp.getPosition_longitude(), vp.getPosition_latitude(),vp.getVehicle_id(), formatter.format( vp.getTimestamp()));
 
                    
                     // Debugging output
-                    logger.debug("Added VehiclePosition " + vp + " to row: " + (rowCount + 1));
-                    rowCount++;
+                    logger.debug("Added VehiclePosition " + vp + " to row: " + (rowCount));
+
                 }
+                rowCount++;
             }
         }
     }

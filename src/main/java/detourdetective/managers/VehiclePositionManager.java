@@ -29,7 +29,7 @@ public class VehiclePositionManager {
             Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
             Predicate vehicleIdPredicate = cb.like(root.get("vehicle_id"), vehicleId);
             Predicate combinedPredicate = cb.and(tripIdPredicate, vehicleIdPredicate);
-            
+
 
             cr.select(root).where(combinedPredicate);
             cr.orderBy(cb.asc(root.get("timestamp")));
@@ -44,6 +44,7 @@ public class VehiclePositionManager {
             return null;
         }
     }
+
     public static List<VehiclePosition> readtripVehiclePositionWithDate(String tripId, String vehicleId, Date date) {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -55,7 +56,7 @@ public class VehiclePositionManager {
             // Constructing the query predicate
             Predicate tripIdPredicate = cb.like(root.get("trip_id"), tripId);
             Predicate vehicleIdPredicate = cb.like(root.get("vehicle_id"), vehicleId);
-            Predicate tripDatePredicate = cb.equal(root.get("trip_start_date"),date);
+            Predicate tripDatePredicate = cb.equal(root.get("trip_start_date"), date);
             Predicate combinedPredicate = cb.and(tripIdPredicate, vehicleIdPredicate, tripDatePredicate);
 
 
@@ -66,16 +67,18 @@ public class VehiclePositionManager {
             List<VehiclePosition> results = query.getResultList();
 
             LocalTime firstStopTime = TripManager.tripStartTime(tripId);
-                      
+
+            LocalTime lastStopTime = TripManager.tripEndTime(tripId);
+
             List<VehiclePosition> filteredVehiclePositions = new ArrayList<>();
-            
-            for (VehiclePosition vp : results) 
-            {                            	      
-            	if(VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp())>
-            	VehiclePositionManager.secondsFromMidnightLocalTime(firstStopTime))
-            	{
-            		filteredVehiclePositions.add(vp);
-            	}
+
+            for (VehiclePosition vp : results) {
+                if (VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) >
+                        VehiclePositionManager.secondsFromMidnightLocalTime(firstStopTime) &&
+                        VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) <
+                                VehiclePositionManager.secondsFromMidnightLocalTime(lastStopTime)) {
+                    filteredVehiclePositions.add(vp);
+                }
             }
             return filteredVehiclePositions;
         } catch (Exception e) {
@@ -84,25 +87,16 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    public static int secondsFromMidnightLocalTime(LocalTime timestamp)
-    {
-		return (timestamp.getHour()*60*60)+(timestamp.getMinute()*60);    	    
+
+    public static int secondsFromMidnightLocalTime(LocalTime timestamp) {
+        return (timestamp.getHour() * 60 * 60) + (timestamp.getMinute() * 60);
     }
-    
+
     @SuppressWarnings("deprecation")
-	public static int secondsFromMidnightTimestamp(Timestamp timestamp)
-    {
-    	return (timestamp.getHours()*60*60)+(timestamp.getMinutes()*60);
-    	
+    public static int secondsFromMidnightTimestamp(Timestamp timestamp) {
+        return (timestamp.getHours() * 60 * 60) + (timestamp.getMinutes() * 60);
+
     }
-
-    public static LocalTime secondsFromMidnight(Timestamp time){
-        LocalTime now = LocalTime.now(ZoneId.systemDefault());
-        now.toSecondOfDay();
-
-        return null;
-    }
-
 
 
     public static List<VehiclePosition> getTripVehiclePositionsByDate(String tripId, LocalDate startDate) {
@@ -128,7 +122,8 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    public static Set<TripVehicle> tripsByDate(LocalDate date){
+
+    public static Set<TripVehicle> tripsByDate(LocalDate date) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -143,11 +138,11 @@ public class VehiclePositionManager {
 
             Set<TripVehicle> tripSet = new HashSet<>();
 
- 
-    		for (VehiclePosition position : results) {
-    			tripSet.add(new TripVehicle(position));
-    		}
-    		return tripSet;
+
+            for (VehiclePosition position : results) {
+                tripSet.add(new TripVehicle(position));
+            }
+            return tripSet;
 
         } catch (Exception e) {
 
@@ -155,6 +150,7 @@ public class VehiclePositionManager {
             return null;
         }
     }
+
     public static List<TripVehicle> getTripIdAndVehicleIdForARoute(String routeId) {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -186,5 +182,5 @@ public class VehiclePositionManager {
             return null;
         }
     }
-    }
+}
 

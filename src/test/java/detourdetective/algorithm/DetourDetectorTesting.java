@@ -272,8 +272,8 @@ public class DetourDetectorTesting extends TestCase {
 	}
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTimeRouteS76() throws ParseException {
-		String tripBus766 = "CA_C4-Weekday-SDon-115000_MISC_364_8713";
-		String vehicleId = "8713";
+		String tripBus766 = "CA_C4-Weekday-SDon-100500_S7686_141";
+		String vehicleId = "7051";
 		String SDate = "2024072200:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
