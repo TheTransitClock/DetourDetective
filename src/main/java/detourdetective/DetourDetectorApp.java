@@ -117,7 +117,12 @@ public class DetourDetectorApp {
 						int offRouteThreshold = Integer.parseInt(cmd.getOptionValue("B"));
 						int distance = Integer.parseInt(cmd.getOptionValue("S"));
 
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date,distance,onRouteThreshold,offRouteThreshold);
+						if(tripId.equals("CA_C4-Weekday-SDon-115000_MISC_364")) {
+							System.out.println("Test");
+						}
+
+							List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, distance, onRouteThreshold, offRouteThreshold);
+
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
 
 						// Create a unique filename for each result
@@ -150,8 +155,8 @@ public class DetourDetectorApp {
 				}
 				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L")) {
 					try {
-						String dateString = cmd.getOptionValue("R");
-						Date date = new Date(dateString);
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+						Date date = sdf.parse(cmd.getOptionValue("D"));
 						// Initialize DetourDetector and perform detour detection
 						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
 						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date);
