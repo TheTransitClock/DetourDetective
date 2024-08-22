@@ -49,7 +49,7 @@ In this example:
 - `-L /home/user/detours/` specifies the directory where the CSV file will be saved.
 - `-A 5` sets the on-route threshold to 5.
 - `-B 15` sets the off-route threshold to 15.
-- `-S 20` sets the distance threshold to 400 meters as the program will square the distance for you.
+- `-S 20` sets the distance threshold.
 
 ### Example 2
 
