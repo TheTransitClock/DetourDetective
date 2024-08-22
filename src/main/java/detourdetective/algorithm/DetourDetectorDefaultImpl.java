@@ -37,7 +37,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private double offRouteThreshold = 5;
 
-	private static boolean detourDetected = false;
+	boolean detourDetected = false;
 
 	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints,
 			int distanceSquaredThreshold, int onRouteThreshold, int countThreshold) {
@@ -61,6 +61,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		Timestamp savedDetourStart = null;
 		long detourDurationInMillis = 0;
 
+		boolean detourDetected = false;
+		
 		int position_counter = 0;
 		List<List<VehiclePosition>> detours = new ArrayList<>();
 		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<>();
