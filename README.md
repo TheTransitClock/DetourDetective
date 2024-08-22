@@ -21,7 +21,7 @@ To run the tool, you will need to provide several options. Below is a descriptio
 | `--Directory` | `-L`         | Yes      | The directory where the CSV file will be stored. This specifies the folder path where the output file will be saved. |
 | `--onRouteThreshold` | `-A` | No       | The number of times the vehicle must appear on the route after a detour to confirm that the detour has ended. Default is 3. |
 | `--offRouteThreshold` | `-B` | No      | The number of times the vehicle must appear off the route to confirm that it is on a detour. Default is 10. |
-| `--Distance`  | `-S`         | No       | The distance (in meters) a vehicle must be off route to be considered on a detour. Default is 400 meters. |
+| `--Distance`  | `-S`         | No       | The distance (in meters) a vehicle must be off route to be considered on a detour. Default is 20 meters. |
 
 ### Example Usage
 
