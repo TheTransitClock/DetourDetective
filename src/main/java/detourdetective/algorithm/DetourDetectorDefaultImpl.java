@@ -13,10 +13,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.*;
 import org.locationtech.jts.geom.*;
+import org.locationtech.jts.operation.distance.DistanceOp;
 
 import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
@@ -71,7 +75,9 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				Point vehiclePoint = gf.createPoint(vehicleCoordinates);
 
 				// Calculate distance
-				double distance = this.getDistance(vehiclePoint, polyline);
+				//double distance = this.getDistance(vehiclePoint, polyline);
+				float distance = getDistance(vehiclePosition,tripShape); 
+				
 				double squaredDistance = distance * distance;
 
 				logger.debug("The distance is " + distance);
@@ -255,29 +261,37 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		}
 		return dist;
 
-
-
-
-		  /*try { String code = "AUTO:42001," + point.getX() + "," + point.getY();
-		  CoordinateReferenceSystem auto = CRS.decode(code);
-		  // auto = CRS.decode("epsg:2470");
-		  MathTransform transform =
-		  CRS.findMathTransform(DefaultGeographicCRS.WGS84, auto);
-		  Geometry g3 = JTS.transform(line, transform);
-		  Geometry g4 = JTS.transform(point, transform);
-
-		  Coordinate[] c = DistanceOp.nearestPoints(g4, g3);
-
-		  Coordinate c1 = new Coordinate();
-		  //System.out.println(c[1].distance(g4.getCoordinate()));
-			  JTS.transform(c[1], c1, transform.inverse());
-		  //System.out.println(geometryFactory.createPoint(c1)); dist =
-		  JTS.orthodromicDistance(point.getCoordinate(), c1,
-		  DefaultGeographicCRS.WGS84); } catch (Exception e) { e.printStackTrace(); }
-		  return dist;
-
-		   */
-
 	}
 
+	private float getDistance(VehiclePosition vehiclePosition, List<Point> tripShape) {
+		// TODO Auto-generated method stub
+		float mindistance = -1;
+		Point closestPoint=null;
+		
+		for(int i=0;i<tripShape.size();i++)
+		{
+			 float distance = distFrom(vehiclePosition.getPosition_latitude(),vehiclePosition.getPosition_longitude(),   tripShape.get(i).getY() , tripShape.get(i).getX());
+			 if(mindistance ==-1 || distance < mindistance)
+			 {
+				 mindistance=distance;
+				 closestPoint=tripShape.get(i);
+			 }
+		}
+		logger.info(vehiclePosition);
+		logger.info(closestPoint);
+		return mindistance;
+	}
+		
+	public float distFrom(double lat1, double lng1, double lat2, double lng2) {
+	    double earthRadius = 6371000; //meters
+	    double dLat = Math.toRadians(lat2-lat1);
+	    double dLng = Math.toRadians(lng2-lng1);
+	    double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+	               Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+	               Math.sin(dLng/2) * Math.sin(dLng/2);
+	    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	    float dist = (float) (earthRadius * c);
+
+	    return dist;
+	    }
 }
