@@ -85,9 +85,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 				logger.info("Vehicle position :" + position_counter + "," + vehicleCoordinates.getX() + ","
 						+ vehicleCoordinates.getY() + ", Timestamp:"
 						+ formatter.format(vehiclePosition.getTimestamp()));
-				
-				
-
+								
 				position_counter++;
 
 				// Check if the squared distance exceeds the threshold
@@ -155,7 +153,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		}
 
 		// If detour is still ongoing at the end of the points, add it to the list
-		if (!offRoutePoints.isEmpty()) {
+		if (!offRoutePoints.isEmpty() && detourDetected) {
 			detours.add(new ArrayList<>(offRoutePoints));
 		}
 
