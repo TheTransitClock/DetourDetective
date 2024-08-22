@@ -105,4 +105,4 @@ The file name is made up of the date, route id , trip id and the vehicle id.
 - https://github.com/OpenTransitTools/gtfsdb_realtime
 
 ### Acknowledgements
-This project was completed as part of Google Summer of Code 2024. Special thanks to William Wong from the MTA in New York for their invaluable support throughout this project.
+This project was completed as part of Google Summer of Code 2024. Special thanks to William Wong from the MTA in New York for the invaluable support throughout this project.
