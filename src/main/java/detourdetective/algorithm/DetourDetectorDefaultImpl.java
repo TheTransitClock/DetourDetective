@@ -35,7 +35,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private double onRouteThreshold = 3;
 
-	private double offRouteThreshold = 10;
+	private double offRouteThreshold = 5;
 
 	private static boolean detourDetected = false;
 

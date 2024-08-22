@@ -3,6 +3,9 @@ package detourdetective;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +15,7 @@ import detourdetective.algorithm.DetourDetectorDefaultImpl;
 import detourdetective.entities.ExportToCSV;
 import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
+import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
 import org.apache.commons.cli.*;
 
@@ -64,9 +68,15 @@ public class DetourDetectorApp {
 
 						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date);
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
+
+						LocalTime tripStartTime = TripManager.tripStartTime(tripId);
+						String format = "HHmmss";
+
+						DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
+
 						
 						// Create a unique filename for each result
-						String filename = String.format("%s_%s_%s_%s.CSV",filenameDateFormatter.format(date),cmd.getOptionValue('R'),tripId, vehicleId);
+						String filename = String.format("%s_%s_%s_%s_%s.CSV",filenameDateFormatter.format(date),timeFormatter.format(tripStartTime), cmd.getOptionValue('R'),tripId, vehicleId);
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
