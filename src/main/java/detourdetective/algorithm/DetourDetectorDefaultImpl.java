@@ -121,9 +121,10 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 				if (consecutiveOffRouteCount > countThreshold) {
 					offRoutePoints.add(vehiclePosition);
+					
 				}
 
-				if (consecutiveOnRouteCount > 0 && consecutiveOnRouteCount < onRouteThreshold) {
+				if (detourDetected==true && consecutiveOnRouteCount > 0 && consecutiveOnRouteCount < onRouteThreshold) {
 					offRoutePoints.add(vehiclePosition);
 				}
 
