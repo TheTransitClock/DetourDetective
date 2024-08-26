@@ -33,11 +33,11 @@ public class DetourDetectorApp {
 		options.addOption("D", "date", true, "The date we want to check this route on..");
 		options.addOption("T", "tripId", true, "The trip id we will be checking..");
 		options.addOption("V", "vehicleId", true, "The vehicle id we will be checking on the trip id provided.");
-		options.addOption("F", "Filename", true, "The filename of where the output will be stored.");
-		options.addOption("L", "Directory", true, "The directory where the CSV file will be stored.");
+		options.addOption("F", "filename", true, "The filename of where the output will be stored.");
+		options.addOption("L", "directory", true, "The directory where the CSV file will be stored.");
 		options.addOption("A", "onRouteThreshold", true, "The number of times the vehicle appears on route when it returns from the detour to say the detour has ended.");
 		options.addOption("B", "offRouteThreshold", true, "The number of times the vehicle appears off route to say it is on a detour");
-		options.addOption("S", "Distance", true, "The distance a vehicle appears off route to say it is on a detour");
+		options.addOption("S", "distance", true, "The distance a vehicle appears off route to say it is on a detour");
 
 			try {
 				CommandLine cmd = parser.parse(options, args);
@@ -176,12 +176,36 @@ public class DetourDetectorApp {
 						logger.info("IOException occurred: " + e.getMessage());
 					}
 				}
+				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L") && cmd.hasOption("A") && cmd.hasOption("B") && cmd.hasOption("S")) {
+					try {
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+						Date date = sdf.parse(cmd.getOptionValue("D"));
+						int distance = Integer.parseInt(cmd.getOptionValue("S"));
+						int onRouteThreshold = Integer.parseInt(cmd.getOptionValue("A"));
+						int offRouteThreshold = Integer.parseInt(cmd.getOptionValue("B"));
+						// Initialize DetourDetector and perform detour detection
+						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
+						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date,distance,onRouteThreshold,offRouteThreshold);
+
+						// Export the detected detours to an Excel file
+						if (detours != null && !detours.isEmpty()) {
+							ExportToCSV.exportDetoursToCSV
+									(detours, cmd.getOptionValue("F"));
+							logger.info("Detours exported to " + cmd.getOptionValue("F"));
+						} else {
+							logger.info("No detour detected for Vehicle " + cmd.getOptionValue("V"));
+						}
+					} catch (IOException e) {
+						logger.info("IOException occurred: " + e.getMessage());
+					}
+				}
 			} catch (ParseException | IOException e) {
 				logger.info("Unexpected exception: " + e.getMessage());
 			} catch (java.text.ParseException e) {
                 throw new RuntimeException(e);
             }
     }
+
     }
 
 
