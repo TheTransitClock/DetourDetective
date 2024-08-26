@@ -20,8 +20,9 @@ import detourdetective.managers.VehiclePositionManager;
 public class DetourDetectorTesting extends TestCase {
 
 	private static Logger logger = Logger.getLogger(DetourDetectorTesting.class);
-	/*
-	Bus that went on a detour.
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
 	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault() throws ParseException {
@@ -42,20 +43,26 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours1Default.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursB16.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
+	 */
 	@Test
-	public void testDetourDetectionInPlaceWithDescreteFrechet() {
+	public void testDetourDetectionInPlaceWithDescreteFrechet() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
-		Date date = new Date(2024-3-20);
+		String SDate = "2024032623:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
@@ -68,23 +75,26 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursB16.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
-	/*
-	Bus that didn't on a detour.
+	/**
+	 * Bus not on a detour
+	 * @throws ParseException
 	 */
 	@Test
-	public void testDetourDetectionNotInPlaceWithDefault()  {
+	public void testDetourDetectionNotInPlaceWithDefault() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
-		Date date = new Date(2024-3-20);
+		String SDate = "2024032623:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId,date);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
@@ -95,20 +105,26 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursB43.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	/**
+	 * Bus not on detour
+	 * @throws ParseException
+	 */
 	@Test
-	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() {
+	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
-		Date date = new Date(2024-3-20);
+		String SDate = "2024032623:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDiscreteFrechet");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId,date);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
@@ -119,27 +135,26 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.xlsx");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursX27.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
-	/*
-	Bus that went on a detour.
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
 	 */
 	@Test
 	public void testDetourDetectionInPlace2() throws ParseException {
 		String tripBus2453 = "UP_A4-Weekday-SDon-036100_X2737_704";
-		//String tripBus2453 = "UP_A4-Weekday-SDon-043700_X2737_720";
-		//String tripBus2472 = "UP_A4-Weekday-SDon-140000_X2737_733";
-		//String vehicleId = "2457";
 		String vehicleId = "2453";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		Date date = sdf.parse("20240319");
+		String SDate = "2024031923:00:00";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
+		Date date = sdf.parse(SDate);
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId, date);
 
@@ -153,39 +168,18 @@ public class DetourDetectorTesting extends TestCase {
 			try {
 				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursX27.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
-	/*
-	Bus that didn't on a detour.
-	 */
-	@Test
-	public void testDetourDetectionNotInPlace2(){
-		String tripBus2453NoDetour = "UP_A4-Weekday-SDon-043700_X2737_720";
-		String vehicleId = "2457";
-		Date date = new Date(2024-3-20);
-		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453NoDetour, vehicleId,date);
-		if (detourDetected != null && !detourDetected.isEmpty()) {
-			System.out.println("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				System.out.println("Off-route Vehicle Position: " + vp);
-			}
-			// Exporting the results to an Excel file
-			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours.CSV");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 
-		} else {
-			System.out.println("No detour detected for Vehicle " + vehicleId);
-		}
-	}
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
+	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3() throws ParseException {
 		String tripBus766 = "CA_C4-Weekday-SDon-076500_MISC_314";
@@ -205,7 +199,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-076500_MISC_314.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -214,6 +208,10 @@ public class DetourDetectorTesting extends TestCase {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
+	 */
 	@Test
 	public void testDetourDetectionNotInPlaceWithDefault3() throws ParseException {
 		String tripBus766 = "CA_C4-Sunday-144000_MISC_374";
@@ -233,19 +231,23 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Sunday-144000_MISC_374.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
+	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTime() throws ParseException {
 		String tripBus766 = "CA_C4-Weekday-SDon-080000_MISC_243";
-		String vehicleId = "8713";
+		String vehicleId = "8705";
 		String SDate = "2024072200:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
@@ -261,15 +263,19 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-080000_MISC_243.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	/**
+	 * Bus on a detour
+	 * @throws ParseException
+	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTimeRouteS76() throws ParseException {
 		String tripBus766 = "CA_C4-Weekday-SDon-100500_S7686_141";
@@ -289,9 +295,9 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "Detours3Default.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-100500_S7686_141.CSV");
 			} catch (IOException e) {
-				logger.error("Error exporting detours to Excel", e);
+				logger.error("Error exporting detours to CSV", e);
 			}
 
 		} else {
