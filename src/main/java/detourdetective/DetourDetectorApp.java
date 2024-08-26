@@ -18,8 +18,11 @@ import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
 import org.apache.commons.cli.*;
+import org.apache.log4j.Logger;
 
 public class DetourDetectorApp {
+
+	private static Logger logger = Logger.getLogger(DetourDetectorApp.class);
 	public static void main(String[] args) {
 
 		CommandLineParser parser = new DefaultParser();
@@ -46,7 +49,7 @@ public class DetourDetectorApp {
 					// Get trip and vehicle IDs for the route
 					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
-						System.out.println("No trip and vehicle IDs found for route " + routeId);
+						logger.info("No trip and vehicle IDs found for route " + routeId);
 						return;
 					}
 
@@ -61,7 +64,7 @@ public class DetourDetectorApp {
 
 						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date);
 						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
-							System.out.println("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+							logger.info("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 							continue;
 						}
 
@@ -81,9 +84,9 @@ public class DetourDetectorApp {
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
 							ExportToCSV.exportDetoursToCSV(detours, cmd.getOptionValue("L")+filename);
-							System.out.println("Detours exported to " + cmd.getOptionValue("L")+filename);
+							logger.info("Detours exported to " + cmd.getOptionValue("L")+filename);
 						} else {
-							System.out.println("No detour detected for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+							logger.info("No detour detected for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 						}
 					}
 				}
@@ -94,7 +97,7 @@ public class DetourDetectorApp {
 					// Get trip and vehicle IDs for the route
 					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
-						System.out.println("No trip and vehicle IDs found for route " + routeId);
+						logger.info("No trip and vehicle IDs found for route " + routeId);
 						return;
 					}
 
@@ -109,7 +112,7 @@ public class DetourDetectorApp {
 
 						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date);
 						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
-							System.out.println("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+							logger.info("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 							continue;
 						}
 
@@ -118,7 +121,7 @@ public class DetourDetectorApp {
 						int distance = Integer.parseInt(cmd.getOptionValue("S"));
 
 						if(tripId.equals("CA_C4-Weekday-SDon-115000_MISC_364")) {
-							System.out.println("Test");
+							logger.debug("Test");
 						}
 
 							List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, distance, onRouteThreshold, offRouteThreshold);
@@ -131,27 +134,27 @@ public class DetourDetectorApp {
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
 							ExportToCSV.exportDetoursToCSV(detours, cmd.getOptionValue("L")+filename);
-							System.out.println("Detours exported to " + cmd.getOptionValue("L")+filename);
+							logger.info("Detours exported to " + cmd.getOptionValue("L")+filename);
 						} else {
-							System.out.println("No detour detected for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
+							logger.info("No detour detected for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 						}
 					}
 				}
 
 
 				if (cmd.hasOption("D")) {
-					System.out.println("Date: " + cmd.getOptionValue("D"));
+					logger.info("Date: " + cmd.getOptionValue("D"));
 				}
 
 				if (cmd.hasOption("T")) {
-					System.out.println("Trip id : " + cmd.getOptionValue("T"));
+					logger.info("Trip id : " + cmd.getOptionValue("T"));
 				}
 
 				if (cmd.hasOption("V")){
-					System.out.println("Vehicle: " + cmd.getOptionValue("V"));
+					logger.info("Vehicle: " + cmd.getOptionValue("V"));
 				}
 				if (cmd.hasOption("F")){
-					System.out.println("Filename: " + cmd.getOptionValue("F"));
+					logger.info("Filename: " + cmd.getOptionValue("F"));
 				}
 				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L")) {
 					try {
@@ -165,16 +168,16 @@ public class DetourDetectorApp {
 						if (detours != null && !detours.isEmpty()) {
 							ExportToCSV.exportDetoursToCSV
 									(detours, cmd.getOptionValue("F"));
-							System.out.println("Detours exported to " + cmd.getOptionValue("F"));
+							logger.info("Detours exported to " + cmd.getOptionValue("F"));
 						} else {
-							System.out.println("No detour detected for Vehicle " + cmd.getOptionValue("V"));
+							logger.info("No detour detected for Vehicle " + cmd.getOptionValue("V"));
 						}
 					} catch (IOException e) {
-						System.out.println("IOException occurred: " + e.getMessage());
+						logger.info("IOException occurred: " + e.getMessage());
 					}
 				}
 			} catch (ParseException | IOException e) {
-				System.out.println("Unexpected exception: " + e.getMessage());
+				logger.info("Unexpected exception: " + e.getMessage());
 			} catch (java.text.ParseException e) {
                 throw new RuntimeException(e);
             }
