@@ -17,21 +17,20 @@ To run the tool, you will need to provide several options. Below is a descriptio
 | `--date`      | `-D`         | Yes      | The date you want to check the route on. The date and time should be provided in the format `yyyyMMddHH:mm:ss`. |
 | `--tripId`    | `-T`         | Yes      | The trip ID you want to analyze. This is the specific trip on the route to check for detours. |
 | `--vehicleId` | `-V`         | Yes      | The vehicle ID associated with the trip you are analyzing. This is the identifier for the vehicle whose GPS data will be checked for detours. |
-| `--Filename`  | `-F`         | Yes      | The filename where the output CSV will be stored. This is the name of the file that will contain the detected detour information. |
-| `--Directory` | `-L`         | Yes      | The directory where the CSV file will be stored. This specifies the folder path where the output file will be saved. |
+| `--filename`  | `-F`         | Yes      | The filename where the output CSV will be stored. This is the name of the file that will contain the detected detour information. |
+| `--directory` | `-L`         | Yes      | The directory where the CSV file will be stored. This specifies the folder path where the output file will be saved. |
 | `--onRouteThreshold` | `-A` | No       | The number of times the vehicle must appear on the route after a detour to confirm that the detour has ended. Default is 3. |
 | `--offRouteThreshold` | `-B` | No      | The number of times the vehicle must appear off the route to confirm that it is on a detour. Default is 10. |
-| `--Distance`  | `-S`         | No       | The distance (in meters) a vehicle must be off route to be considered on a detour. Default is 20 meters. |
+| `--distance`  | `-S`         | No       | The distance (in meters) a vehicle must be off route to be considered on a detour. Default is 20 meters. |
 
 ### Example Usage
 
 Below is an example command to run the tool:
 
 ```bash
-  -R 1234 \
-  -D 2024081523:00:00 \
-  -T UP_A4-Weekday-SDon-036100_X2737_704 \
-  -V 5678 \
+  -D 2024072200:00:00 \
+  -T CA_C4-Weekday-SDon-080000_MISC_243 \
+  -V 8705 \
   -F detours_output.csv \
   -L /home/user/detours/ \
   -A 5 \
@@ -41,15 +40,21 @@ Below is an example command to run the tool:
 
 In this example:
 
-- `-R 1234` specifies the route ID.
-- `-D 2024081523:00:00` specifies the date and time of the trip.
-- `-T UP_A4-Weekday-SDon-036100_X2737_704` specifies the trip ID.
-- `-V 5678` specifies the vehicle ID.
+- `-D 2024072200:00:00` specifies the date and time of the trip.
+- `-T CA_C4-Weekday-SDon-080000_MISC_243` specifies the trip ID.
+- `-V 8705` specifies the vehicle ID.
 - `-F detours_output.csv` sets the output filename to `detours_output.csv`.
 - `-L /home/user/detours/` specifies the directory where the CSV file will be saved.
 - `-A 5` sets the on-route threshold to 5.
 - `-B 15` sets the off-route threshold to 15.
 - `-S 20` sets the distance threshold.
+
+Output
+
+![image](https://github.com/user-attachments/assets/90dd5e61-f20b-460d-a61a-d8486ed472d5)
+
+Blue points represent the trip shape. The yellow points are the detour.
+
 
 ### Example 2
 
@@ -58,7 +63,7 @@ In this example:
   -T JG_A4-Weekday-SDon-084600_B16_414 \
   -V 766 \
   -F detours_output.csv \
-  -L /home/user/detours/ \
+  -L /home/user/detours/ 
 ```
 In this example:
 
@@ -81,7 +86,7 @@ Green points represent the shape of the trip. The yellow points are the detoured
 ```bash
   -R B43
   -D 2024032623:00:00 \
-  -L /home/user/detours/ \
+  -L /home/user/detours/ 
 ```
 
 In this example:
