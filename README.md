@@ -22,6 +22,7 @@ To run the tool, you will need to provide several options. Below is a descriptio
 | `--onRouteThreshold` | `-A` | No       | The number of times the vehicle must appear on the route after a detour to confirm that the detour has ended. Default is 3. |
 | `--offRouteThreshold` | `-B` | No      | The number of times the vehicle must appear off the route to confirm that it is on a detour. Default is 10. |
 | `--distance`  | `-S`         | No       | The distance (in meters) a vehicle must be off route to be considered on a detour. Default is 20 meters. |
+| `--withTimestamp` | `-W` | Yes       | If you just want the vehicle GPS points from the Start of the first stop time to the last stop time. Answering Yes for you do want it or No if you dont want it. |
 
 ### Example Usage
 
@@ -33,6 +34,7 @@ Below is an example command to run the tool:
   -V 8705 \
   -F detours_output.csv \
   -L /home/user/detours/ \
+  -W Yes\
   -A 5 \
   -B 15 \
   -S 20
@@ -48,6 +50,7 @@ In this example:
 - `-A 5` sets the on-route threshold to 5.
 - `-B 15` sets the off-route threshold to 15.
 - `-S 20` sets the distance threshold.
+- `-W Yes` Agrees that we want the vehicle positions between the first stop time to the last stop time.
 
 Output
 
@@ -62,6 +65,7 @@ Blue points represent the trip shape. The yellow points are the detour.
   -D 2024081523:00:00 \
   -T JG_A4-Weekday-SDon-084600_B16_414 \
   -V 766 \
+  -W Yes\
   -F detours_output.csv \
   -L /home/user/detours/ 
 ```
@@ -70,6 +74,7 @@ In this example:
 - `-D 2024032623:00:00` specifies the date and time of the trip.
 - `-T JG_A4-Weekday-SDon-084600_B16_414` specifies the trip ID.
 - `-V 766` specifies the vehicle ID.
+- `-W Yes` Agrees that we want the vehicle positions between the first stop time to the last stop time.
 - `-F detours_output.csv` sets the output filename to `detours_output.csv`.
 - `-L /home/user/detours/` specifies the directory where the CSV file will be saved.
 
@@ -86,6 +91,7 @@ Green points represent the shape of the trip. The yellow points are the detoured
 ```bash
   -R B43
   -D 2024032623:00:00 \
+  -W Yes\
   -L /home/user/detours/ 
 ```
 
@@ -93,6 +99,7 @@ In this example:
 
 - '-R B43' specifies the route.
 - '-D 2024032623:00:00' specifies the date and time.
+- `-W Yes` Agrees that we want the vehicle positions between the first stop time to the last stop time.
 - `-L /home/user/detours/` specifies the directory where the CSV file will be saved.
 
 ![image](https://github.com/user-attachments/assets/7085edd2-ddc3-4275-9736-3d5ac2651aac)
