@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class VehiclePositionManager {
@@ -45,7 +46,7 @@ public class VehiclePositionManager {
         }
     }
 
-    public static List<VehiclePosition> readtripVehiclePositionWithDate(String tripId, String vehicleId, Date date) {
+    public static List<VehiclePosition> readtripVehiclePositionWithDate(String tripId, String vehicleId, Date date, String withTimestamp) {
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
@@ -66,21 +67,27 @@ public class VehiclePositionManager {
             Query<VehiclePosition> query = session.createQuery(cr);
             List<VehiclePosition> results = query.getResultList();
 
+            if(withTimestamp.equalsIgnoreCase("Yes")) {
             LocalTime firstStopTime = TripManager.tripStartTime(tripId);
 
             LocalTime lastStopTime = TripManager.tripEndTime(tripId);
 
             List<VehiclePosition> filteredVehiclePositions = new ArrayList<>();
 
-            for (VehiclePosition vp : results) {
-                if (VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) >
-                        VehiclePositionManager.secondsFromMidnightLocalTime(firstStopTime) &&
-                        VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) <
-                                VehiclePositionManager.secondsFromMidnightLocalTime(lastStopTime)) {
-                    filteredVehiclePositions.add(vp);
+
+
+                for (VehiclePosition vp : results) {
+                    if (VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) >
+                            VehiclePositionManager.secondsFromMidnightLocalTime(firstStopTime) &&
+                            VehiclePositionManager.secondsFromMidnightTimestamp(vp.getTimestamp()) <
+                                    VehiclePositionManager.secondsFromMidnightLocalTime(lastStopTime)) {
+                        filteredVehiclePositions.add(vp);
+                    }
+
                 }
+                return filteredVehiclePositions;
             }
-            return filteredVehiclePositions;
+                return results;
         } catch (Exception e) {
 
             e.printStackTrace();

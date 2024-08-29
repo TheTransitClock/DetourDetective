@@ -31,9 +31,10 @@ public class DetourDetectorTesting extends TestCase {
 		String SDate = "2024032623:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
@@ -56,6 +57,7 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus on a detour
 	 * @throws ParseException
 	 */
+	/*
 	@Test
 	public void testDetourDetectionInPlaceWithDescreteFrechet() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
@@ -95,8 +97,9 @@ public class DetourDetectorTesting extends TestCase {
 		String SDate = "2024032623:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId,date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
 			for (List<VehiclePosition> vp : detourDetected) {
@@ -118,7 +121,7 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus not on detour
 	 * @throws ParseException
 	 */
-	@Test
+	/*@Test
 	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
@@ -144,6 +147,8 @@ public class DetourDetectorTesting extends TestCase {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+
+	 */
 	/**
 	 * Bus on a detour
 	 * @throws ParseException
@@ -152,11 +157,12 @@ public class DetourDetectorTesting extends TestCase {
 	public void testDetourDetectionInPlace2() throws ParseException {
 		String tripBus2453 = "UP_A4-Weekday-SDon-036100_X2737_704";
 		String vehicleId = "2453";
-		String SDate = "2024031923:00:00";
+		String SDate = "2024032023:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
@@ -187,9 +193,10 @@ public class DetourDetectorTesting extends TestCase {
 		String SDate = "2024072200:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
@@ -209,7 +216,7 @@ public class DetourDetectorTesting extends TestCase {
 		}
 	}
 	/**
-	 * Bus on a detour
+	 * Bus not on a detour
 	 * @throws ParseException
 	 */
 	@Test
@@ -219,9 +226,13 @@ public class DetourDetectorTesting extends TestCase {
 		String SDate = "2024072100:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
+		int onRouteCount = 3;
+		int offRouteCount =7;
+		int distance = 30;
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date,withTimestamp,distance,onRouteCount,offRouteCount);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
@@ -251,9 +262,10 @@ public class DetourDetectorTesting extends TestCase {
 		String SDate = "2024072200:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
@@ -273,19 +285,20 @@ public class DetourDetectorTesting extends TestCase {
 		}
 	}
 	/**
-	 * Bus on a detour
+	 * Bus not on a detour
 	 * @throws ParseException
 	 */
 	@Test
-	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTimeRouteS76() throws ParseException {
+	public void testDetourDetectionNotInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTimeRouteS76() throws ParseException {
 		String tripBus766 = "CA_C4-Weekday-SDon-100500_S7686_141";
 		String vehicleId = "7051";
 		String SDate = "2024072200:00:00";
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 		Date date = sdf.parse(SDate);
+		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date);
+		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);

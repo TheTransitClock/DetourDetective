@@ -38,14 +38,16 @@ public class DetourDetectorApp {
 		options.addOption("A", "onRouteThreshold", true, "The number of times the vehicle appears on route when it returns from the detour to say the detour has ended.");
 		options.addOption("B", "offRouteThreshold", true, "The number of times the vehicle appears off route to say it is on a detour");
 		options.addOption("S", "distance", true, "The distance a vehicle appears off route to say it is on a detour");
+		options.addOption("W", "withTimestamp", true, "If you just want the vehicle GPS points from the Start of the first stop time to the last stop time. Answering Yes for you do want it or No if you dont want it.");
 
 			try {
 				CommandLine cmd = parser.parse(options, args);
 
-				if (cmd.hasOption("R") && cmd.hasOption("D") && cmd.hasOption("L")) {
+				if (cmd.hasOption("R") && cmd.hasOption("D") && cmd.hasOption("L") && cmd.hasOption("W")) {
 					String routeId = cmd.getOptionValue("R");
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 					Date date = sdf.parse(cmd.getOptionValue("D"));
+					String withTimestamp = cmd.getOptionValue("W");
 					// Get trip and vehicle IDs for the route
 					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
@@ -62,14 +64,14 @@ public class DetourDetectorApp {
 						String tripId =  tripAndVehicleId.getTripId();
 						String vehicleId = tripAndVehicleId.getVehicleId();
 
-						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date);
+						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date, withTimestamp);
 						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
 							logger.info("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 							continue;
 						}
 
 
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date);
+						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp);
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
 
 						LocalTime tripStartTime = TripManager.tripStartTime(tripId);
@@ -90,10 +92,11 @@ public class DetourDetectorApp {
 						}
 					}
 				}
-				if (cmd.hasOption("R") && cmd.hasOption("D") && cmd.hasOption("L") && cmd.hasOption("A") && cmd.hasOption("B") && cmd.hasOption("S")) {
+				if (cmd.hasOption("R") && cmd.hasOption("D") && cmd.hasOption("L") && cmd.hasOption("A") && cmd.hasOption("B") && cmd.hasOption("S") && cmd.hasOption("W")) {
 					String routeId = cmd.getOptionValue("R");
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					Date date = sdf.parse(cmd.getOptionValue("D"));
+					String withTimestamp = cmd.getOptionValue("W");
 					// Get trip and vehicle IDs for the route
 					List<TripVehicle> tripAndVehicleIds = VehiclePositionManager.getTripIdAndVehicleIdForARoute(routeId);
 					if (tripAndVehicleIds == null || tripAndVehicleIds.isEmpty()) {
@@ -110,7 +113,7 @@ public class DetourDetectorApp {
 						String tripId =  tripAndVehicleId.getTripId();
 						String vehicleId = tripAndVehicleId.getVehicleId();
 
-						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date);
+						List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,vehicleId, date, withTimestamp);
 						if (vehiclePositions == null || vehiclePositions.isEmpty()) {
 							logger.info("No vehicle positions found for Trip ID " + tripId + " and Vehicle ID " + vehicleId);
 							continue;
@@ -124,7 +127,7 @@ public class DetourDetectorApp {
 							logger.debug("Test");
 						}
 
-							List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, distance, onRouteThreshold, offRouteThreshold);
+							List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp, distance, onRouteThreshold, offRouteThreshold);
 
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
 
@@ -160,9 +163,10 @@ public class DetourDetectorApp {
 					try {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 						Date date = sdf.parse(cmd.getOptionValue("D"));
+						String withTimestamp = cmd.getOptionValue("W");
 						// Initialize DetourDetector and perform detour detection
 						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date);
+						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date, withTimestamp);
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
@@ -176,16 +180,17 @@ public class DetourDetectorApp {
 						logger.info("IOException occurred: " + e.getMessage());
 					}
 				}
-				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L") && cmd.hasOption("A") && cmd.hasOption("B") && cmd.hasOption("S")) {
+				if (cmd.hasOption("T") && cmd.hasOption("V") && cmd.hasOption("D") && cmd.hasOption("F") && cmd.hasOption("L") && cmd.hasOption("A") && cmd.hasOption("B") && cmd.hasOption("S") && cmd.hasOption("W")) {
 					try {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHH:mm:ss");
 						Date date = sdf.parse(cmd.getOptionValue("D"));
+						String withTimestamp = cmd.getOptionValue("W");
 						int distance = Integer.parseInt(cmd.getOptionValue("S"));
 						int onRouteThreshold = Integer.parseInt(cmd.getOptionValue("A"));
 						int offRouteThreshold = Integer.parseInt(cmd.getOptionValue("B"));
 						// Initialize DetourDetector and perform detour detection
 						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date,distance,onRouteThreshold,offRouteThreshold);
+						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date,withTimestamp, distance,onRouteThreshold,offRouteThreshold);
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {

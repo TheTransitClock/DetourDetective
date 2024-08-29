@@ -168,27 +168,27 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date) {
+	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp) {
 
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
 		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,
-				vehicleId, date);
+				vehicleId, date, withTimestamp);
 
 		return detectDetours(tripShape, vehiclePositions);
 	}
 
 	@Override
-	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, int distance,
+	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distance,
 			int onCountThreshold, int offCountThreshold) {
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
 		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,
-				vehicleId, date);
+				vehicleId, date, withTimestamp);
 
 		this.distanceSquaredThreshold = distance * distance;
 		this.onRouteThreshold = onCountThreshold;

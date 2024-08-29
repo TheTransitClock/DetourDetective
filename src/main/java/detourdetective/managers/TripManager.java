@@ -132,14 +132,9 @@ public class TripManager {
 			if(results.size() == 1){
 				Tuple tuple = results.get(0);
 				String arrivalTime = tuple.get("arrival_time", String.class);
+
 				
-				String format = "HH:mm:ss";
-								
-				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
-								
-				LocalTime dateTime = LocalTime.parse(arrivalTime, timeFormatter);
-				
-				return dateTime;
+				return parseTimeWith24HourHandling(arrivalTime);
 			}
 		}
 		return null;
@@ -163,22 +158,38 @@ public class TripManager {
 			Query<Tuple> query = session.createQuery(cr);
 			List<Tuple> results = query.getResultList();
 
-				if (!results.isEmpty()) {
-					Tuple tuple = results.get(0);
-					String arrivalTime = tuple.get("arrival_time", String.class);
+			if (!results.isEmpty()) {
+				Tuple tuple = results.get(0);
+				String arrivalTime = tuple.get("arrival_time", String.class);
 
-					String format = "HH:mm:ss";
 
-					DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
-
-					LocalTime dateTime = LocalTime.parse(arrivalTime, timeFormatter);
-
-					return dateTime;
+				return parseTimeWith24HourHandling(arrivalTime);
 			}
 		}
 		return null;
 	}
 
+	public static LocalTime parseTimeWith24HourHandling(String arrivalTime) {
+		if (arrivalTime.startsWith("24")) {
+			// Adjust the time by converting "24:xx:xx" to "00:xx:xx" and handling the next day.
+			arrivalTime = "00" + arrivalTime.substring(2);
+
+			String format = "HH:mm:ss";
+
+			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
+
+			LocalTime dateTime = LocalTime.parse(arrivalTime, timeFormatter);
+
+
+
+			return dateTime.plusHours(24);
+		} else {
+			String format = "HH:mm:ss";
+
+			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(format);
+			return LocalTime.parse(arrivalTime, timeFormatter);
+		}
+	}
 	
 	   public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
 	        return dateToConvert.toInstant()
