@@ -105,9 +105,10 @@ The file name is made up of the date, route id , trip id and the vehicle id.
 - The tool will generate a CSV file in the specified directory with the results of the detour detection.
 
 ### Used to read data into database
-
-- https://github.com/ember-technology-ltd/gtfsrdb
-- https://github.com/OpenTransitTools/gtfsdb_realtime
+- Read in GTFS
+-- https://github.com/OpenTransitTools/gtfsdb
+- Read in GTFS realtime
+-- https://github.com/OpenTransitTools/gtfsdb_realtime
 
 ### Acknowledgements
 This project was completed as part of Google Summer of Code 2024. Special thanks to William Wong from the MTA in New York for the invaluable support throughout this project.
