@@ -1,7 +1,7 @@
 package detourdetective.algorithm;
 
 import detourdetective.entities.ExportToCSV;
-import detourdetective.entities.TripVehicle;
+
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
@@ -10,12 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
-import detourdetective.managers.VehiclePositionManager;
 
 public class DetourDetectorTesting extends TestCase {
 
@@ -44,7 +41,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursB16.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursB16.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -53,6 +50,7 @@ public class DetourDetectorTesting extends TestCase {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
 	}
+	
 	/**
 	 * Bus on a detour
 	 * @throws ParseException
@@ -108,7 +106,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursB43.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursB43.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -172,7 +170,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursX27.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursX27.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -206,7 +204,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-076500_MISC_314.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursCA_C4-Weekday-SDon-076500_MISC_314.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to Excel", e);
 			}
@@ -242,7 +240,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Sunday-144000_MISC_374.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursCA_C4-Sunday-144000_MISC_374.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -275,7 +273,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-080000_MISC_243.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursCA_C4-Weekday-SDon-080000_MISC_243.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -308,7 +306,7 @@ public class DetourDetectorTesting extends TestCase {
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "C:/Users/andre/Documents/GSoC2024/DetourDetective/DetourCSV/DetoursCA_C4-Weekday-SDon-100500_S7686_141.CSV");
+				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursCA_C4-Weekday-SDon-100500_S7686_141.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
