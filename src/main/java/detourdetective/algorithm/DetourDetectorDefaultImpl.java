@@ -25,7 +25,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	private static final Logger logger = Logger.getLogger(DetourDetectorDefaultImpl.class);
 
-	private static final GeometryFactory gf = new GeometryFactory();
+	private final GeometryFactory gf = new GeometryFactory();
 
 	private double distanceSquaredThreshold = 1000;
 
@@ -169,7 +169,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
-		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readTripVehiclePositionWithDate(tripId,
 				vehicleId, date, withTimestamp);
 
 		return detectDetours(tripId, vehicleId, tripShape, vehiclePositions);
@@ -182,7 +182,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
-		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,
+		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readTripVehiclePositionWithDate(tripId,
 				vehicleId, date, withTimestamp);
 
 		this.distanceSquaredThreshold = distance * distance;

@@ -8,6 +8,7 @@ import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.locationtech.jts.geom.Point;
@@ -21,14 +22,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class TripManager {
-	
-	public static List<Shape> readTripShape(String tripId)
-	{
-		Trip trip = TripManager.readtrip(tripId);
-		trip.getShape_id();
-		System.out.println(trip);
-		return null;
-	}
+
+	private static final Logger logger = Logger.getLogger(TripManager.class);
 	public static List<Point> readShapeLatAndLong(String tripId) {
 		
 		Trip trip = readtrip(tripId);
@@ -38,19 +33,21 @@ public class TripManager {
 			List<Shape> shapes = readShape(trip.getShape_id());
 	
 			GeometryFactory geometryFactory = new GeometryFactory();
-	
-			for (Shape shape : shapes) {
-				double latitude = shape.getShape_pt_lat();
-				double longitude = shape.getShape_pt_lon();
-				Coordinate coordinate = new Coordinate(longitude, latitude); // Longitude first, then latitude
-				Point point = geometryFactory.createPoint(coordinate);
-				latAndLong.add(point);
-			}
-		}
+
+            if (shapes != null) {
+                for (Shape shape : shapes) {
+                    double latitude = shape.getShape_pt_lat();
+                    double longitude = shape.getShape_pt_lon();
+                    Coordinate coordinate = new Coordinate(longitude, latitude); // Longitude first, then latitude
+                    Point point = geometryFactory.createPoint(coordinate);
+                    latAndLong.add(point);
+                }
+            }
+        }
 		return latAndLong;
 	}
     private static List<Shape> readShape(String shape_id) {
-		// TODO Auto-generated method stub
+
     	try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -60,13 +57,11 @@ public class TripManager {
 			cr.orderBy(cb.asc(root.get("shape_pt_sequence")));
 
             Query<Shape> query = session.createQuery(cr);
-            List<Shape> results = query.getResultList();
-            
-            return results;
+
+            return query.getResultList();
           
         } catch (Exception e) {
-           
-            e.printStackTrace();
+			logger.error(e);
             return null;
         }
 	
@@ -84,14 +79,14 @@ public class TripManager {
             List<Trip> results = query.getResultList();
             // commit transaction
           
-            if(results.size() > 0) {
+            if(!results.isEmpty()) {
                 return results.get(0);
             }else{
                 return null;
             }
         } catch (Exception e) {
            
-            e.printStackTrace();
+            logger.error(e);
             return null;
         }
     }
