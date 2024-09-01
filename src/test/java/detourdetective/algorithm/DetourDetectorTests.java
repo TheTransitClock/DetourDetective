@@ -3,10 +3,8 @@ package detourdetective.algorithm;
 import detourdetective.entities.Detour;
 import detourdetective.utils.ExportToCSV;
 
-import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,14 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-public class DetourDetectorTesting extends TestCase {
+public class DetourDetectorTests extends TestCase {
 
-	private static Logger logger = Logger.getLogger(DetourDetectorTesting.class);
+	private static final Logger logger = Logger.getLogger(DetourDetectorTests.class);
 	/**
 	 * Bus on a detour
 	 *
 	 */
-	@Test
 	public void testDetourDetectionInPlaceWithDefault() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-084600_B16_414";
 		String vehicleId = "766";
@@ -88,7 +85,6 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus not on a detour
 	 *
 	 */
-	@Test
 	public void testDetourDetectionNotInPlaceWithDefault() throws ParseException {
 		String tripBus766 = "JG_A4-Weekday-SDon-132500_B43_480";
 		String vehicleId = "802";
@@ -150,7 +146,6 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus on a detour
 	 *
 	 */
-	@Test
 	public void testDetourDetectionInPlace2() throws ParseException {
 		String tripBus2453 = "UP_A4-Weekday-SDon-036100_X2737_704";
 		String vehicleId = "2453";
@@ -180,7 +175,6 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus on a detour
 	 *
 	 */
-	@Test
 	public void testDetourDetectionInPlaceWithDefault3() throws ParseException {
 		String tripBus766 = "CA_C4-Weekday-SDon-076500_MISC_314";
 		String vehicleId = "8223";
@@ -211,7 +205,6 @@ public class DetourDetectorTesting extends TestCase {
 	 * Bus not on a detour
 	 *
 	 */
-	@Test
 	public void testDetourDetectionNotInPlaceWithDefault3() throws ParseException {
 		String tripBus766 = "CA_C4-Sunday-144000_MISC_374";
 		String vehicleId = "8210";
