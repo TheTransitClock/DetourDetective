@@ -35,7 +35,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	boolean detourDetected = false;
 
-	public List<Detour> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints,
+	public List<Detour> detectDetours(String tripId, String vehicleId, List<Point> tripShape, List<VehiclePosition> avlPoints,
 									  int distanceSquaredThreshold, int onRouteThreshold, int countThreshold) {
 		// Convert JTS Points to Coordinates
 		Coordinate[] polylineCoordinates = new Coordinate[tripShape.size()];
@@ -125,7 +125,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (offRoutePoints.size() >= countThreshold) {
 						logger.info("End of detour detected.");
 						detourDetected = false;
-						Detour detour=new Detour(offRoutePoints.subList(0,offRoutePoints.size()-onRouteThreshold+1), tripShape);
+						Detour detour=new Detour(tripId, vehicleId,offRoutePoints.subList(0,offRoutePoints.size()-onRouteThreshold+1),  tripShape);
 						detours.add(detour);
 					}
 					offRoutePoints=new ArrayList<>();
@@ -141,7 +141,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 		// If detour is still ongoing at the end of the points, add it to the list
 		if (!offRoutePoints.isEmpty() && detourDetected) {
-			detours.add(new Detour(new ArrayList<>(offRoutePoints), tripShape));
+			detours.add(new Detour(tripId , vehicleId, new ArrayList<>(offRoutePoints), tripShape));
 		}
 
 		if (!detours.isEmpty()) {
@@ -172,7 +172,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		List<VehiclePosition> vehiclePositions = VehiclePositionManager.readtripVehiclePositionWithDate(tripId,
 				vehicleId, date, withTimestamp);
 
-		return detectDetours(tripShape, vehiclePositions);
+		return detectDetours(tripId, vehicleId, tripShape, vehiclePositions);
 	}
 
 	@Override
@@ -189,12 +189,12 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		this.onRouteThreshold = onCountThreshold;
 		this.offRouteThreshold = offCountThreshold;
 
-		return detectDetours(tripShape, vehiclePositions);
+		return detectDetours(tripId, vehicleId,tripShape, vehiclePositions);
 	}
 
 	@Override
-	public List<Detour> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
-		return detectDetours(tripShape, avlPoints, (int) distanceSquaredThreshold, (int) onRouteThreshold,
+	public List<Detour> detectDetours(String tripId, String vehicleId, List<Point> tripShape, List<VehiclePosition> avlPoints) {
+		return detectDetours(tripId, vehicleId, tripShape, avlPoints, (int) distanceSquaredThreshold, (int) onRouteThreshold,
 				(int) offRouteThreshold);
 	}
 

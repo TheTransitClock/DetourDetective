@@ -16,7 +16,7 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 	private static final double countThreshold = 10;
 
     @Override
-    public List<Detour>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+    public List<Detour>  detectDetours(String tripId, String vehicleId, List<Point> tripShape, List<VehiclePosition> avlPoints) {
 		int consecutiveOffRouteCount = 0;
 		List<Detour>  detours = new ArrayList<Detour>();
     	List<sbahr.Point> tripPointsConverted=new ArrayList<sbahr.Point>();
@@ -43,7 +43,7 @@ public class DetourDetectorDiscreteFrechet extends DetourDetectorDefaultImpl imp
 			double frechetDistance=discreteFrechetDistance.computeDiscreteFrechet(discreteFrechetDistance.getTimeSeriesP(), discreteFrechetDistance.getTimeSeriesQ());
 			logger.info("Frechet distance was computed as " + frechetDistance);
 			if(frechetDistance> DETOUR_THRESHOLD)
-				detours.add(new Detour(avlPoints,tripShape));
+				detours.add(new Detour(tripId, vehicleId, avlPoints,tripShape));
 			return detours;
 
 		} catch (Exception e) {

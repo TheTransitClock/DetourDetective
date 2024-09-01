@@ -11,6 +11,7 @@ import java.util.List;
 
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorDefaultImpl;
+import detourdetective.algorithm.DetourDetectorFactory;
 import detourdetective.entities.Detour;
 import detourdetective.utils.ExportToCSV;
 import detourdetective.entities.TripVehicle;
@@ -56,7 +57,7 @@ public class DetourDetectorApp {
 					}
 
 					// Initialize DetourDetector
-					DetourDetector detourDetector = new DetourDetectorDefaultImpl();
+					DetourDetector detourDetector = DetourDetectorFactory.getInstance();
 
 					// Iterate over each trip and vehicle ID pair
 					for (TripVehicle tripAndVehicleId : tripAndVehicleIds) {
@@ -105,7 +106,7 @@ public class DetourDetectorApp {
 					}
 
 					// Initialize DetourDetector
-					DetourDetector detourDetector = new DetourDetectorDefaultImpl();
+					DetourDetector detourDetector = DetourDetectorFactory.getInstance();
 
 					// Iterate over each trip and vehicle ID pair
 					for (TripVehicle tripAndVehicleId : tripAndVehicleIds) {
@@ -165,7 +166,7 @@ public class DetourDetectorApp {
 						Date date = sdf.parse(cmd.getOptionValue("D"));
 						String withTimestamp = cmd.getOptionValue("W");
 						// Initialize DetourDetector and perform detour detection
-						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
+						DetourDetector detourDetector = DetourDetectorFactory.getInstance();
 						List<Detour> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date, withTimestamp);
 
 						// Export the detected detours to an Excel file

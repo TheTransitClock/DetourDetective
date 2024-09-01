@@ -48,7 +48,7 @@ public interface DetourDetector {
 
     public List<Detour>  detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distanceSquaredThreshold, int onCountThreshold, int offCountThreshold);
 
-    public List<Detour>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
+    public List<Detour>  detectDetours(String tripId, String vehicleId, List<Point> tripShape, List<VehiclePosition> avlPoints);
 
     public Point findDetourStart(List<Point> tripShape, List<VehiclePosition> avlPoints);
 

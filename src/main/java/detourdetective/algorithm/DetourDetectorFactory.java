@@ -13,8 +13,13 @@ public class DetourDetectorFactory {
 			detector = new DetourDetectorDefaultImpl();
 		if (type.equals("detourdetective.algorithm.DetourDetectorDiscreteFrechet"))
 			detector = new DetourDetectorDiscreteFrechet();
+		if(type == null)
+			detector = new DetourDetectorDefaultImpl();
 
 		return detector;
 	}
-
+	public static DetourDetector getInstance()
+	{
+		return new DetourDetectorDefaultImpl();
+	}
 }

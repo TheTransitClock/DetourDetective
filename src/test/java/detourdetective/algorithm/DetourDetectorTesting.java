@@ -6,6 +6,7 @@ import detourdetective.utils.ExportToCSV;
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class DetourDetectorTesting extends TestCase {
 	private static Logger logger = Logger.getLogger(DetourDetectorTesting.class);
 	/**
 	 * Bus on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault() throws ParseException {
@@ -46,12 +47,13 @@ public class DetourDetectorTesting extends TestCase {
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
+			fail();
 		}
 	}
 	
 	/**
 	 * Bus on a detour
-	 * @throws ParseException
+	 *
 	 */
 	/*
 	@Test
@@ -84,7 +86,7 @@ public class DetourDetectorTesting extends TestCase {
 	}
 	/**
 	 * Bus not on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionNotInPlaceWithDefault() throws ParseException {
@@ -98,20 +100,23 @@ public class DetourDetectorTesting extends TestCase {
 		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
+
 			// Exporting the results to an Excel file
 			try {
 				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursB43.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
-
+			fail();
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
+
+
 		}
 	}
 	/**
 	 * Bus not on detour
-	 * @throws ParseException
+	 *
 	 */
 	/*@Test
 	public void testDetourDetectionNotInPlaceWithDiscreteFrechet() throws ParseException {
@@ -143,7 +148,7 @@ public class DetourDetectorTesting extends TestCase {
 	 */
 	/**
 	 * Bus on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionInPlace2() throws ParseException {
@@ -167,12 +172,13 @@ public class DetourDetectorTesting extends TestCase {
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
+			fail();
 		}
 	}
 
 	/**
 	 * Bus on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3() throws ParseException {
@@ -198,11 +204,12 @@ public class DetourDetectorTesting extends TestCase {
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
+			fail();
 		}
 	}
 	/**
 	 * Bus not on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionNotInPlaceWithDefault3() throws ParseException {
@@ -235,7 +242,7 @@ public class DetourDetectorTesting extends TestCase {
 	}
 	/**
 	 * Bus on a detour
-	 * @throws ParseException
+	 *
 	 */
 	@Test
 	public void testDetourDetectionInPlaceWithDefault3TestingToSeeIfItFiltersVPBeforeStartTime() throws ParseException {
@@ -261,6 +268,7 @@ public class DetourDetectorTesting extends TestCase {
 
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
+			fail();
 		}
 	}
 	/**
@@ -288,7 +296,7 @@ public class DetourDetectorTesting extends TestCase {
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
-
+			fail();
 		} else {
 			logger.info("No detour detected for Vehicle " + vehicleId);
 		}
