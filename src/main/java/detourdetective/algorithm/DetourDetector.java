@@ -22,6 +22,7 @@ package detourdetective.algorithm;
 import java.util.Date;
 import java.util.List;
 
+import detourdetective.entities.Detour;
 import detourdetective.entities.VehiclePosition;
 import org.locationtech.jts.geom.*;
 
@@ -45,14 +46,14 @@ public interface DetourDetector {
      * @throws ParseException if there is an error parsing the trip or vehicle data
      */
 
+    
+    public List<Detour>  detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distanceSquaredThreshold, int onCountThreshold, int offCountThreshold);
 
-    public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId, Date date, String withTimestamp);
-
-    public List<List<VehiclePosition>>  detectDetours(String tripId, String vehicleId, Date date,String withTimestamp, int distanceSquaredThreshold, int onCountThreshold, int offCountThreshold);
-
-    List<List<VehiclePosition>>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
+    public List<Detour>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
 
     public Point findDetourStart(List<Point> tripShape, List<VehiclePosition> avlPoints);
 
     public Point findDetourEnd(List<Point> tripShape, List<VehiclePosition> avlPoints);
+
+    public List<Detour> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp);
 }

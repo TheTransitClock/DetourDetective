@@ -3,7 +3,6 @@ package detourdetective;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -12,7 +11,8 @@ import java.util.List;
 
 import detourdetective.algorithm.DetourDetector;
 import detourdetective.algorithm.DetourDetectorDefaultImpl;
-import detourdetective.entities.ExportToCSV;
+import detourdetective.entities.Detour;
+import detourdetective.utils.ExportToCSV;
 import detourdetective.entities.TripVehicle;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
@@ -71,7 +71,7 @@ public class DetourDetectorApp {
 						}
 
 
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp);
+						List<Detour> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp);
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
 
 						LocalTime tripStartTime = TripManager.tripStartTime(tripId);
@@ -127,7 +127,7 @@ public class DetourDetectorApp {
 							logger.debug("Test");
 						}
 
-							List<List<VehiclePosition>> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp, distance, onRouteThreshold, offRouteThreshold);
+							List<Detour> detours = detourDetector.detectDetours(tripId, vehicleId, date, withTimestamp, distance, onRouteThreshold, offRouteThreshold);
 
 						SimpleDateFormat filenameDateFormatter = new SimpleDateFormat("yyyyMMdd");
 
@@ -166,7 +166,7 @@ public class DetourDetectorApp {
 						String withTimestamp = cmd.getOptionValue("W");
 						// Initialize DetourDetector and perform detour detection
 						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date, withTimestamp);
+						List<Detour> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date, withTimestamp);
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {
@@ -190,7 +190,7 @@ public class DetourDetectorApp {
 						int offRouteThreshold = Integer.parseInt(cmd.getOptionValue("B"));
 						// Initialize DetourDetector and perform detour detection
 						DetourDetector detourDetector = new DetourDetectorDefaultImpl();
-						List<List<VehiclePosition>> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date,withTimestamp, distance,onRouteThreshold,offRouteThreshold);
+						List<Detour> detours = detourDetector.detectDetours(cmd.getOptionValue("T"), cmd.getOptionValue("V"), date,withTimestamp, distance,onRouteThreshold,offRouteThreshold);
 
 						// Export the detected detours to an Excel file
 						if (detours != null && !detours.isEmpty()) {

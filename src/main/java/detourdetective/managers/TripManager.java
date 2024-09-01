@@ -1,6 +1,6 @@
 package detourdetective.managers;
 
-import detourdetective.HibernateUtil;
+import detourdetective.utils.HibernateUtil;
 import detourdetective.entities.Shape;
 import detourdetective.entities.StopTimes;
 import detourdetective.entities.Trip;
@@ -14,9 +14,7 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

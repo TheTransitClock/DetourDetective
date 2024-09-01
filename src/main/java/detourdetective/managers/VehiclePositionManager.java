@@ -1,20 +1,15 @@
 package detourdetective.managers;
 
-import detourdetective.HibernateUtil;
+import detourdetective.utils.HibernateUtil;
 import detourdetective.entities.*;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.*;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class VehiclePositionManager {

@@ -1,6 +1,7 @@
 package detourdetective.algorithm;
 
-import detourdetective.entities.ExportToCSV;
+import detourdetective.entities.Detour;
+import detourdetective.utils.ExportToCSV;
 
 import detourdetective.entities.VehiclePosition;
 import junit.framework.TestCase;
@@ -31,17 +32,14 @@ public class DetourDetectorTesting extends TestCase {
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
+		List<Detour>  detoursDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
-		if (detourDetected != null && !detourDetected.isEmpty()) {
+		if (detoursDetected != null && !detoursDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
 
 			// Exporting the results to an Excel file
 			try {
-				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursB16.CSV");
+				ExportToCSV.exportDetoursToCSV(detoursDetected, "DetoursB16.CSV");
 			} catch (IOException e) {
 				logger.error("Error exporting detours to CSV", e);
 			}
@@ -97,13 +95,9 @@ public class DetourDetectorTesting extends TestCase {
 		Date date = sdf.parse(SDate);
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
-
 			// Exporting the results to an Excel file
 			try {
 				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursB43.CSV");
@@ -160,14 +154,10 @@ public class DetourDetectorTesting extends TestCase {
 		Date date = sdf.parse(SDate);
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId, date, withTimestamp);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus2453, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
-
 			// Exporting the results to an Excel file
 			try {
 				ExportToCSV.exportDetoursToCSV(detourDetected, "DetoursX27.CSV");
@@ -194,13 +184,10 @@ public class DetourDetectorTesting extends TestCase {
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
 
 			// Exporting the results to an Excel file
 			try {
@@ -230,13 +217,10 @@ public class DetourDetectorTesting extends TestCase {
 		int distance = 30;
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date,withTimestamp,distance,onRouteCount,offRouteCount);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date,withTimestamp,distance,onRouteCount,offRouteCount);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
 
 			// Exporting the results to an Excel file
 			try {
@@ -263,13 +247,10 @@ public class DetourDetectorTesting extends TestCase {
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
 
 			// Exporting the results to an Excel file
 			try {
@@ -296,13 +277,10 @@ public class DetourDetectorTesting extends TestCase {
 		String withTimestamp = "yes";
 		DetourDetector detourDetector=DetourDetectorFactory.getInstance("detourdetective.algorithm.DetourDetectorDefaultImpl");
 
-		List<List<VehiclePosition>>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
+		List<Detour>  detourDetected = detourDetector.detectDetours(tripBus766, vehicleId, date, withTimestamp);
 
 		if (detourDetected != null && !detourDetected.isEmpty()) {
 			logger.info("Detour detected for Vehicle " + vehicleId);
-			for (List<VehiclePosition> vp : detourDetected) {
-				logger.info("Off-route Vehicle Position: " + vp);
-			}
 
 			// Exporting the results to an Excel file
 			try {

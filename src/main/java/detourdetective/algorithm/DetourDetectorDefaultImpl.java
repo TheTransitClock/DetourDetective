@@ -1,11 +1,11 @@
 package detourdetective.algorithm;
 
+import detourdetective.entities.Detour;
 import detourdetective.entities.VehiclePosition;
 import detourdetective.managers.TripManager;
 import detourdetective.managers.VehiclePositionManager;
 
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -13,21 +13,17 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
-import org.geotools.api.referencing.operation.MathTransform;
 import org.geotools.geometry.jts.JTS;
-import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.*;
 import org.locationtech.jts.geom.*;
-import org.locationtech.jts.operation.distance.DistanceOp;
 
 import java.awt.geom.Point2D;
 import java.text.SimpleDateFormat;
 
 public class DetourDetectorDefaultImpl implements DetourDetector {
 
-	private static Logger logger = Logger.getLogger(DetourDetectorDefaultImpl.class);
+	private static final Logger logger = Logger.getLogger(DetourDetectorDefaultImpl.class);
 
 	private static final GeometryFactory gf = new GeometryFactory();
 
@@ -39,8 +35,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 	boolean detourDetected = false;
 
-	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints,
-			int distanceSquaredThreshold, int onRouteThreshold, int countThreshold) {
+	public List<Detour> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints,
+									  int distanceSquaredThreshold, int onRouteThreshold, int countThreshold) {
 		// Convert JTS Points to Coordinates
 		Coordinate[] polylineCoordinates = new Coordinate[tripShape.size()];
 		for (int i = 0; i < tripShape.size(); i++) {
@@ -61,7 +57,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		boolean detourDetected = false;
 		
 		int position_counter = 0;
-		List<List<VehiclePosition>> detours = new ArrayList<>();
+		List<Detour> detours = new ArrayList<>();
 		List<VehiclePosition> potentialOffRoutePoints = new ArrayList<>();
 		List<VehiclePosition> offRoutePoints = new ArrayList<>();
 
@@ -121,7 +117,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					
 				}
 
-				if (detourDetected==true && consecutiveOnRouteCount > 0 && consecutiveOnRouteCount < onRouteThreshold) {
+				if (detourDetected && consecutiveOnRouteCount > 0 && consecutiveOnRouteCount < onRouteThreshold) {
 					offRoutePoints.add(vehiclePosition);
 				}
 
@@ -129,8 +125,8 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					if (offRoutePoints.size() >= countThreshold) {
 						logger.info("End of detour detected.");
 						detourDetected = false;
-
-						detours.add(offRoutePoints.subList(0,offRoutePoints.size()-onRouteThreshold+1));
+						Detour detour=new Detour(offRoutePoints.subList(0,offRoutePoints.size()-onRouteThreshold+1), tripShape);
+						detours.add(detour);
 					}
 					offRoutePoints=new ArrayList<>();
 					potentialOffRoutePoints=new ArrayList<>();
@@ -145,7 +141,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 
 		// If detour is still ongoing at the end of the points, add it to the list
 		if (!offRoutePoints.isEmpty() && detourDetected) {
-			detours.add(new ArrayList<>(offRoutePoints));
+			detours.add(new Detour(new ArrayList<>(offRoutePoints), tripShape));
 		}
 
 		if (!detours.isEmpty()) {
@@ -167,10 +163,9 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		return null;
 	}
 
-	@Override
-	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp) {
+	public List<Detour> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp) {
 
-		// Get the list of JTS Points from the TripManager for the polyline
+		// Get the list of JTS Points from the TripManager for the poly line
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
 
 		// Fetch vehicle positions
@@ -181,7 +176,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public List<List<VehiclePosition>> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distance,
+	public List<Detour> detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distance,
 			int onCountThreshold, int offCountThreshold) {
 		// Get the list of JTS Points from the TripManager for the polyline
 		List<Point> tripShape = TripManager.readShapeLatAndLong(tripId);
@@ -198,12 +193,12 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 	}
 
 	@Override
-	public List<List<VehiclePosition>> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
+	public List<Detour> detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints) {
 		return detectDetours(tripShape, avlPoints, (int) distanceSquaredThreshold, (int) onRouteThreshold,
 				(int) offRouteThreshold);
 	}
 
-	public double getDistance(Point point, LineString line) {
+	private double getDistance(Point point, LineString line) {
 		double dist = -1.0;
 
 		try {
@@ -223,9 +218,12 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 			}
 
 			Coordinate[] pointCoordinates = point.getCoordinates();
-			
-			logger.info("Closest point on line route:"+closestPointToLine.toString());
-			mindistance = -1.0;
+
+
+            if (closestPointToLine != null) {
+                logger.info("Closest point on line route:"+closestPointToLine.toString());
+            }
+            mindistance = -1.0;
 
 			Coordinate closestPointToPoint = null;
 
@@ -238,13 +236,14 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 					closestPointToPoint = pointCoordinates[i];
 				}
 			}
-			logger.info("Closest point on point:"+closestPointToPoint.toString());
-			
-			GeodeticCalculator gc = new GeodeticCalculator(DefaultGeographicCRS.WGS84);
+            if (closestPointToPoint != null) {
+                logger.info("Closest point on point:"+closestPointToPoint.toString());
+            }
+
+            GeodeticCalculator gc = new GeodeticCalculator(DefaultGeographicCRS.WGS84);
 			gc.setStartingPosition(JTS.toDirectPosition(closestPointToLine, DefaultGeographicCRS.WGS84));
-			gc.setDestinationPosition(JTS.toDirectPosition(closestPointToPoint, DefaultGeographicCRS.WGS84));			
-			double distance = gc.getOrthodromicDistance();
-			dist = distance;
+			gc.setDestinationPosition(JTS.toDirectPosition(closestPointToPoint, DefaultGeographicCRS.WGS84));
+            dist = gc.getOrthodromicDistance();
 		} catch (Exception Ex) {
 			logger.info(Ex.toString());
 		}
@@ -271,7 +270,7 @@ public class DetourDetectorDefaultImpl implements DetourDetector {
 		return mindistance;
 	}
 		
-	public float distFrom(double lat1, double lng1, double lat2, double lng2) {
+	private float distFrom(double lat1, double lng1, double lat2, double lng2) {
 	    double earthRadius = 6371000; //meters
 	    double dLat = Math.toRadians(lat2-lat1);
 	    double dLng = Math.toRadians(lng2-lng1);
