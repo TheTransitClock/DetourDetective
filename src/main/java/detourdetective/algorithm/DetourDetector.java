@@ -43,10 +43,9 @@ public interface DetourDetector {
      * @param tripId the ID of the trip
      * @param vehicleId the ID of the vehicle
      * @return true if a detour is detected, false otherwise
-     * @throws ParseException if there is an error parsing the trip or vehicle data
+     *
      */
 
-    
     public List<Detour>  detectDetours(String tripId, String vehicleId, Date date, String withTimestamp, int distanceSquaredThreshold, int onCountThreshold, int offCountThreshold);
 
     public List<Detour>  detectDetours(List<Point> tripShape, List<VehiclePosition> avlPoints);
